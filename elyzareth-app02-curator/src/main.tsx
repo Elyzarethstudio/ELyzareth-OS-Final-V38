@@ -103,15 +103,6 @@ export default function Component() {
 
             <div className="flex items-center gap-2 w-full sm:w-auto">
               <button
-                onClick={handleExportManifest}
-                disabled={!report}
-                className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 disabled:opacity-50 text-slate-200 border border-slate-700 rounded-lg font-medium flex items-center gap-1.5 transition-colors"
-              >
-                <Download className="w-3.5 h-3.5 text-cyan-400" />
-                <span>Export Manifest JSON</span>
-              </button>
-
-              <button
                 onClick={() => setProtocolActivated(true)}
                 disabled={!report}
                 className={`px-3.5 py-1.5 rounded-lg font-semibold flex items-center gap-1.5 transition-all border ${

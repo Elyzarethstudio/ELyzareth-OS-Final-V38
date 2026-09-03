@@ -243,27 +243,6 @@ fun CorpusDashboardScreen(
                     fontWeight = FontWeight.SemiBold
                 )
             }
-
-            OutlinedButton(
-                onClick = { viewModel.exportManifest() },
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = WitnessParchment),
-                shape = RoundedCornerShape(8.dp),
-                modifier = Modifier
-                    .weight(1.1f)
-                    .testTag("export_manifest_button")
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Share,
-                    contentDescription = "Export Manifest",
-                    tint = WitnessParchment,
-                    modifier = Modifier.size(16.dp)
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    text = "Export Manifest",
-                    fontSize = 11.sp
-                )
-            }
         }
 
         Spacer(modifier = Modifier.height(12.dp))
