@@ -1,0 +1,6 @@
+{
+  "name": "Elyzareth OS",
+  "description": "Elyzareth OS v2.0 Lyric Corpus Curator and Forensic Acoustic Morphology Witness Engine.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

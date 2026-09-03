@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Centered within 66dp safe zone (21dp to 87dp) -->
+    <!-- Acoustic Waveform Envelope (ECAM) in Bronze -->
+    <path
+        android:pathData="M26,54 C32,54 35,34 42,34 C48,34 50,74 54,74 C58,74 61,38 66,38 C72,38 75,54 82,54"
+        android:strokeWidth="3.2"
+        android:strokeColor="#D4AF37"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:fillColor="#00000000" />
+
+    <!-- Blue Thread Witness Strand crossing through envelope -->
+    <path
+        android:pathData="M30,62 C38,62 42,46 54,54 C66,62 70,46 78,46"
+        android:strokeWidth="2.5"
+        android:strokeColor="#5B9BF4"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000" />
+
+    <!-- Physical Witness Anchor (Circle/Point at Center 54,54) -->
+    <path
+        android:pathData="M54,54m-4.5,0a4.5,4.5 0,1,1 9,0a4.5,4.5 0,1,1 -9,0"
+        android:fillColor="#FFFFFF" />
+    <path
+        android:pathData="M54,54m-2,0a2,2 0,1,1 4,0a2,2 0,1,1 -4,0"
+        android:fillColor="#16181D" />
+
+    <!-- Forensic Gate Markers (G1 - G5 ticks) -->
+    <path
+        android:pathData="M34,70 L34,73 M44,70 L44,73 M54,70 L54,75 M64,70 L64,73 M74,70 L74,73"
+        android:strokeWidth="1.6"
+        android:strokeColor="#8F96A3"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000" />
+</vector>
