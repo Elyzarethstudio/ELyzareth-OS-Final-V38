@@ -9,24 +9,24 @@ object CorpusSeedData {
     fun getInitialReport(): CorpusAuditReport {
         return CorpusAuditReport(
             timestamp = "2026-09-03T12:43:08.332Z",
-            totalFilesDiscovered = 950,
-            baseTitlesDiscovered = 500,
-            totalArtifactsDiscovered = 950,
-            successfullyParsed = 940,
-            unparsed = 10,
-            duplicateCandidates = 18,
-            orphanArtifacts = 14,
+            totalFilesDiscovered = 510,
+            baseTitlesDiscovered = 390,
+            totalArtifactsDiscovered = 510,
+            successfullyParsed = 505,
+            unparsed = 5,
+            duplicateCandidates = 4,
+            orphanArtifacts = 4,
             missingExpectedComponents = 34,
             englishCount = 248,
             hindiCount = 114,
             multilingualCount = 28,
-            evidenceAvailableCount = 950,
+            evidenceAvailableCount = 510,
             evidenceUnavailableCount = 0,
-            itemsRequiringHumanReview = 32
+            itemsRequiringHumanReview = 46
         )
     }
 
-    fun generateSeedCorpus(scaleTo950: Boolean = true): Pair<List<BaseTitleEntity>, List<ArtifactEntity>> {
+    fun generateSeedCorpus(scaleTo950: Boolean = false): Pair<List<BaseTitleEntity>, List<ArtifactEntity>> {
         val baseTitles = mutableListOf<BaseTitleEntity>()
         val artifacts = mutableListOf<ArtifactEntity>()
 
@@ -47,71 +47,65 @@ object CorpusSeedData {
             "iron key", "stone step", "paper edge", "cold porcelain", "dry wood", "rust wire"
         )
 
-        val totalTitlesCount = if (scaleTo950) 500 else 390
+        // Standard discovery baseline is strictly 390 base titles generating 510 artifacts
+        val totalTitlesCount = 390
+
+        // Explicit unparsed parser failure indices (5 items)
+        // Note: Malformed UTF-8 BOM byte sequence at offset 0x4A even with checksumMatch = true
+        val unparsedIndices = setOf(14, 89, 142, 238, 312)
+
+        // Explicit duplicate candidate indices (4 items)
+        val duplicateIndices = setOf(29, 184, 265, 340)
+
+        // Explicit orphan artifact indices (4 items)
+        val orphanIndices = setOf(42, 115, 230, 305)
+
+        // Additional review candidates to reach exactly 46 human review items:
+        // 5 unparsed + 4 duplicates + 4 orphans = 13 anomalies; + 33 boundary review items = 46 total
+        val additionalReviewIndices = (1..390).filter { i ->
+            i !in unparsedIndices && i !in duplicateIndices && i !in orphanIndices && (i % 11 == 0)
+        }.take(33).toSet()
+
+        // 120 multi-artifact titles (390 + 120 = 510 artifacts total)
+        val multiArtifactIndices = (1..120).toSet()
+
+        // Language allocation matching exactly: 248 English, 114 Hindi, 28 Multilingual = 390 base titles
+        // Multilingual titles: 28 items
+        val multiLangIndices = (1..28).map { 7 * it }.filter { it <= 390 }.take(28).toSet()
+        // Hindi titles: 114 items
+        val hindiIndices = (1..390).filter { it !in multiLangIndices && it % 3 == 0 }.take(114).toSet()
 
         // Seed base titles deterministically
         for (i in 1..totalTitlesCount) {
             val id = "bt_$i"
             val titleName: String
             val language: String
-            val artifactsCount: Int
+            val artifactsCount: Int = if (i in multiArtifactIndices) 2 else 1
 
             when {
                 i <= namedTitles.size -> {
                     val named = namedTitles[i - 1]
                     titleName = named.second
                     language = named.third
-                    artifactsCount = 3
                 }
-                i in 9..50 -> {
-                    if (i % 3 == 0) {
-                        titleName = "Kavita Vault Title #${i - 8} (Witness Series)"
-                        language = "Hindi"
-                    } else if (i % 7 == 0) {
-                        titleName = "Dhaaga Sequence #$i (Physical Anchor)"
-                        language = "Multilingual"
-                    } else {
-                        titleName = "Corpus Lyric #$i (Dry Room Session)"
-                        language = "English"
-                    }
-                    artifactsCount = 3
+                i in multiLangIndices -> {
+                    titleName = "Dhaaga Sequence #$i (Physical Anchor)"
+                    language = "Multilingual"
                 }
-                i in 51..200 -> {
-                    val isHindi = (i % 3 == 0)
-                    val isMulti = (i % 7 == 0)
-                    language = when {
-                        isMulti -> "Multilingual"
-                        isHindi -> "Hindi"
-                        else -> "English"
-                    }
-                    titleName = when {
-                        isMulti -> "Dhaaga Sequence #$i (Physical Anchor)"
-                        isHindi -> "Kavita Vault Title #${i - 8} (Witness Series)"
-                        else -> "Corpus Lyric #$i (Dry Room Session)"
-                    }
-                    artifactsCount = 2
+                i in hindiIndices -> {
+                    titleName = "Kavita Vault Title #${i - 8} (Witness Series)"
+                    language = "Hindi"
                 }
                 else -> {
-                    val isHindi = (i % 3 == 0)
-                    val isMulti = (i % 7 == 0)
-                    language = when {
-                        isMulti -> "Multilingual"
-                        isHindi -> "Hindi"
-                        else -> "English"
-                    }
-                    titleName = when {
-                        isMulti -> "Dhaaga Sequence #$i (Physical Anchor)"
-                        isHindi -> "Kavita Vault Title #${i - 8} (Witness Series)"
-                        else -> "Corpus Lyric #$i (Dry Room Session)"
-                    }
-                    artifactsCount = 1
+                    titleName = "Corpus Lyric #$i (Dry Room Session)"
+                    language = "English"
                 }
             }
 
-            val isFailedItem = (i == 14 || i == 89)
-            val isDuplicate = (i == 29 || i == 184 || i == 310)
-            val isOrphan = (i == 42 || i == 115 || i == 230)
-            val isAmbiguous = isFailedItem || isDuplicate || isOrphan || (i % 15 == 0)
+            val isFailedItem = i in unparsedIndices
+            val isDuplicate = i in duplicateIndices
+            val isOrphan = i in orphanIndices
+            val isAmbiguous = isFailedItem || isDuplicate || isOrphan || (i in additionalReviewIndices)
             val status = if (isFailedItem) "FAILED" else "PARSED"
 
             val baseTitle = BaseTitleEntity(
@@ -129,7 +123,13 @@ object CorpusSeedData {
                 g4Score = "NOT MEASURED",
                 g5Score = "NOT MEASURED",
                 status = status,
-                notes = if (isAmbiguous) "Pending human governor review before 3.2.1.0 gate activation" else ""
+                notes = when {
+                    isFailedItem -> "Parser Failure: Malformed UTF-8 BOM byte sequence at offset 0x4A (Checksum matched, decoding failed)"
+                    isDuplicate -> "Duplicate candidate: Colocated filename similarity flag"
+                    isOrphan -> "Orphan artifact: Companion audio reference manifest missing"
+                    isAmbiguous -> "Pending human governor review before 3.2.1.0 gate activation"
+                    else -> ""
+                }
             )
             baseTitles.add(baseTitle)
 
@@ -137,41 +137,29 @@ object CorpusSeedData {
             val anchorObj = witnessObjects[i % witnessObjects.size]
             for (v in 1..artifactsCount) {
                 val artId = "art_${1000 + artifacts.size + 1}"
-                val versionLabel = when (v) {
-                    1 -> "v1.0 (Dry Room)"
-                    2 -> "v2.0 (Vacuum Reference)"
-                    else -> "v3.0 (T60 Calibration)"
-                }
-                val ext = when (v) {
-                    1 -> "txt"
-                    2 -> "json"
-                    else -> "meta"
-                }
-                val artType = when (v) {
-                    1 -> "lyric_txt"
-                    2 -> "lyric_json"
-                    else -> "metadata"
-                }
+                val versionLabel = if (v == 1) "v1.0 (Dry Room)" else "v2.0 (Vacuum Reference)"
+                val ext = if (v == 1) "txt" else "json"
+                val artType = if (v == 1) "lyric_txt" else "lyric_json"
                 val safeTitle = titleName.replace(" ", "_").replace("#", "_")
                 val filename = "${safeTitle}_v$v.$ext"
                 val folder = if (language == "Hindi") "Corpus_Hindi" else "Corpus_English"
                 val path = "/ELYZARETH_VAULT/$folder/$filename"
 
-                val isArtFailed = isFailedItem
+                val isArtFailed = isFailedItem && (v == 1)
                 val isArtDuplicate = isDuplicate
                 val isArtOrphan = isOrphan && (v == 1)
 
                 val artStatus = if (isArtFailed) "FAILED" else "PARSED"
                 val reviewReason = when {
-                    isArtFailed -> "Parse Error: Encoding mismatch / BOM offset 0x4A"
-                    isArtDuplicate -> "Duplicate Candidate: High filename similarity to sequence #$i"
+                    isArtFailed -> "Parse Error: Malformed UTF-8 BOM byte sequence at offset 0x4A"
+                    isArtDuplicate -> "Duplicate Candidate: High filename similarity flag"
                     isArtOrphan -> "Orphan: Missing audio reference manifest"
                     isAmbiguous -> "Human Governor Review required for witness purity"
                     else -> null
                 }
                 val parseError = if (isArtFailed) "Malformed UTF-8 BOM byte sequence at offset 0x4A" else null
 
-                // Generate deterministically formatted SHA-256 evidence
+                // Generate deterministically formatted SHA-256 evidence (100% available, evidence ≠ verification)
                 val hexSub = (id.hashCode() xor (v * 31) xor titleName.hashCode()).toUInt().toString(16).padStart(8, '0')
                 val fileHash = "sha256_${hexSub}${hexSub}${hexSub}${hexSub}"
 

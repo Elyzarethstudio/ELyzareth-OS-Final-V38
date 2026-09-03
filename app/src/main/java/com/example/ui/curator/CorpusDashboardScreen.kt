@@ -28,15 +28,23 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.Cancel
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Description
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.ThumbUp
+import androidx.compose.material.icons.filled.Undo
+import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -204,20 +212,20 @@ fun CorpusDashboardScreen(
                 colors = ButtonDefaults.buttonColors(containerColor = BlueThread),
                 shape = RoundedCornerShape(8.dp),
                 modifier = Modifier
-                    .weight(1.2f)
+                    .weight(1f)
                     .testTag("saf_scan_button")
             ) {
                 Icon(
                     imageVector = Icons.Default.FolderOpen,
                     contentDescription = "SAF Folder",
                     tint = ObsidianBlack,
-                    modifier = Modifier.size(16.dp)
+                    modifier = Modifier.size(15.dp)
                 )
-                Spacer(modifier = Modifier.width(6.dp))
+                Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                    text = "Select SAF Folder",
+                    text = "SAF Scan",
                     color = ObsidianBlack,
-                    fontSize = 12.sp,
+                    fontSize = 11.sp,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -227,20 +235,44 @@ fun CorpusDashboardScreen(
                 colors = ButtonDefaults.outlinedButtonColors(contentColor = BronzeGold),
                 shape = RoundedCornerShape(8.dp),
                 modifier = Modifier
-                    .weight(1.2f)
+                    .weight(1.1f)
                     .testTag("reset_baseline_button")
             ) {
                 Icon(
                     imageVector = Icons.Default.Refresh,
                     contentDescription = "Dry Run",
                     tint = BronzeGold,
-                    modifier = Modifier.size(16.dp)
+                    modifier = Modifier.size(15.dp)
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                    text = "Dry Run (950+)",
+                    text = "Corpus Baseline",
                     fontSize = 11.sp,
                     fontWeight = FontWeight.SemiBold
+                )
+            }
+
+            OutlinedButton(
+                onClick = { viewModel.exportManifest() },
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = StateVerified),
+                border = androidx.compose.foundation.BorderStroke(1.dp, StateVerified.copy(alpha = 0.6f)),
+                shape = RoundedCornerShape(8.dp),
+                modifier = Modifier
+                    .weight(1.2f)
+                    .testTag("export_corpus_manifest_button")
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Share,
+                    contentDescription = "Export Manifest",
+                    tint = StateVerified,
+                    modifier = Modifier.size(15.dp)
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    text = "Export Corpus Manifest",
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1
                 )
             }
         }

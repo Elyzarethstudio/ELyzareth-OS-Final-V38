@@ -39,13 +39,16 @@ fun VerificationStatusBadge(
     status: String,
     modifier: Modifier = Modifier
 ) {
-    val (bgColor, textColor) = when (status.uppercase()) {
-        "PARSED" -> Pair(StateParsed.copy(alpha = 0.2f), StateParsed)
-        "VERIFIED" -> Pair(StateVerified.copy(alpha = 0.2f), StateVerified)
-        "FAILED" -> Pair(StateFailed.copy(alpha = 0.25f), StateFailed)
-        "UNVERIFIED" -> Pair(StateUnverified.copy(alpha = 0.2f), StateUnverified)
-        "DISCOVERED" -> Pair(StateDiscovered.copy(alpha = 0.2f), StateDiscovered)
-        else -> Pair(StateNotMeasured.copy(alpha = 0.2f), StateNotMeasured)
+    val (bgColor, textColor, label) = when (status.uppercase()) {
+        "RELEASE READY", "RELEASE_READY" -> Triple(StateVerified.copy(alpha = 0.25f), StateVerified, "RELEASE READY")
+        "CURATION REQUIRED", "CURATION_REQUIRED" -> Triple(StateUnverified.copy(alpha = 0.25f), StateUnverified, "CURATION REQUIRED")
+        "DEFECTIVE" -> Triple(StateFailed.copy(alpha = 0.25f), StateFailed, "DEFECTIVE")
+        "PARSED" -> Triple(StateParsed.copy(alpha = 0.2f), StateParsed, "PARSED")
+        "VERIFIED" -> Triple(StateVerified.copy(alpha = 0.2f), StateVerified, "VERIFIED")
+        "FAILED" -> Triple(StateFailed.copy(alpha = 0.25f), StateFailed, "FAILED")
+        "UNVERIFIED" -> Triple(StateUnverified.copy(alpha = 0.2f), StateUnverified, "UNVERIFIED")
+        "DISCOVERED" -> Triple(StateDiscovered.copy(alpha = 0.2f), StateDiscovered, "DISCOVERED")
+        else -> Triple(StateNotMeasured.copy(alpha = 0.2f), StateNotMeasured, status.uppercase())
     }
 
     Box(
@@ -56,7 +59,7 @@ fun VerificationStatusBadge(
             .padding(horizontal = 8.dp, vertical = 3.dp)
     ) {
         Text(
-            text = status.uppercase(),
+            text = label,
             color = textColor,
             fontSize = 11.sp,
             fontWeight = FontWeight.Bold,

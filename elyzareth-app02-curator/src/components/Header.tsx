@@ -103,7 +103,7 @@ export default function Header({
           className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white font-mono text-xs font-semibold rounded-lg shadow-md flex items-center gap-2 transition-all border border-cyan-400/30"
         >
           <Database className="w-4 h-4 text-cyan-100" />
-          <span>Run 950+ Artifact Dry Run</span>
+          <span>Corpus Baseline (510 Artifacts)</span>
         </button>
 
         {totalTitles > 0 && (

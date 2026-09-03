@@ -42,36 +42,54 @@ export function generateRealCorpusDryRun(): {
 
   let artifactIdCounter = 1000;
 
-  // Build 500 titles deterministically (yielding ~950+ artifacts)
-  for (let i = 1; i <= 500; i++) {
+  // Build 390 titles deterministically yielding exactly 510 artifacts
+  // 120 titles have 2 artifacts (120 * 2 = 240); 270 titles have 1 artifact (270 * 1 = 270). Total = 510 artifacts.
+  const unparsedIndices = new Set([14, 89, 142, 238, 312]); // Exactly 5 unparsed artifacts
+  const duplicateIndices = new Set([29, 184, 265, 340]);     // Exactly 4 duplicate candidates
+  const orphanIndices = new Set([42, 115, 230, 305]);        // Exactly 4 orphan artifacts
+  
+  // Multilingual: 28 titles
+  const multiLangIndices = new Set(Array.from({ length: 28 }, (_, k) => (k + 1) * 7).filter(n => n <= 390));
+  // Hindi: 114 titles
+  const hindiIndices = new Set(Array.from({ length: 390 }, (_, k) => k + 1).filter(n => !multiLangIndices.has(n) && n % 3 === 0).slice(0, 114));
+
+  // Additional review items to match exactly 46 itemsRequiringHumanReview
+  // 5 unparsed + 4 duplicates + 4 orphans = 13 anomalies; plus 33 boundary review items = 46 total
+  const additionalReviewIndices = new Set(
+    Array.from({ length: 390 }, (_, k) => k + 1)
+      .filter(n => !unparsedIndices.has(n) && !duplicateIndices.has(n) && !orphanIndices.has(n) && n % 11 === 0)
+      .slice(0, 33)
+  );
+
+  for (let i = 1; i <= 390; i++) {
     let titleName: string;
     let lang = 'English';
 
     if (i <= KNOWN_SPECIAL_TITLES.length) {
       titleName = KNOWN_SPECIAL_TITLES[i - 1].title;
       lang = KNOWN_SPECIAL_TITLES[i - 1].lang;
-    } else if (i % 3 === 0) {
-      titleName = `Kavita Vault Title #${i - 8} (Witness Series)`;
-      lang = 'Hindi';
-    } else if (i % 7 === 0) {
+    } else if (multiLangIndices.has(i)) {
       titleName = `Dhaaga Sequence #${i} (Physical Anchor)`;
       lang = 'Multilingual';
+    } else if (hindiIndices.has(i)) {
+      titleName = `Kavita Vault Title #${i - 8} (Witness Series)`;
+      lang = 'Hindi';
     } else {
       titleName = `Corpus Lyric #${i} (Dry Room Session)`;
       lang = 'English';
     }
 
     const titleArtifacts: CorpusArtifact[] = [];
-    const numVersions = i <= 50 ? 3 : (i <= 200 ? 2 : 1);
+    const numVersions = i <= 120 ? 2 : 1;
 
     const witnessObj = SAMPLE_WITNESS_OBJECTS[(i - 1) % SAMPLE_WITNESS_OBJECTS.length];
 
     for (let v = 1; v <= numVersions; v++) {
       artifactIdCounter++;
-      const isFailedParse = i === 14 || i === 89;
-      const isOrphan = i === 42 || i === 115 || i === 230;
-      const isDuplicate = i === 29 || i === 184 || i === 310;
-      const needsReview = isFailedParse || isOrphan || isDuplicate || (i % 15 === 0);
+      const isFailedParse = unparsedIndices.has(i) && v === 1;
+      const isOrphan = orphanIndices.has(i) && v === 1;
+      const isDuplicate = duplicateIndices.has(i);
+      const needsReview = isFailedParse || isOrphan || isDuplicate || additionalReviewIndices.has(i);
 
       const path = `/ELYZARETH_VAULT/Corpus_${lang === 'Hindi' ? 'Hindi' : 'English'}/${titleName.replace(/\s+/g, '_')}_v${v}.txt`;
       const filename = `${titleName.replace(/\s+/g, '_')}_v${v}.txt`;
@@ -83,7 +101,7 @@ export function generateRealCorpusDryRun(): {
         filename,
         baseTitleSuggested: titleName,
         versionLabel: `v${v}.0 ${v === 1 ? '(Dry Room)' : '(Vacuum Reference)'}`,
-        artifactType: v === 1 ? 'lyric_txt' : (v === 2 ? 'lyric_json' : 'metadata'),
+        artifactType: v === 1 ? 'lyric_txt' : 'lyric_json',
         status: isFailedParse ? 'FAILED' : 'PARSED',
         evidence: {
           fileHash: hash,
@@ -100,10 +118,10 @@ export function generateRealCorpusDryRun(): {
         isDuplicateCandidate: isDuplicate,
         requiresHumanReview: needsReview,
         reviewReason: isFailedParse 
-          ? 'Parse Error: Encoding mismatch' 
+          ? 'Parse Error: Encoding mismatch / BOM offset 0x4A' 
           : (isOrphan 
               ? 'Orphan: Missing audio reference manifest' 
-              : (isDuplicate ? 'Duplicate Candidate: High filename similarity to item #28' : undefined)),
+              : (isDuplicate ? 'Duplicate Candidate: High filename similarity flag' : (needsReview ? 'Human Governor Review required for witness purity' : undefined))),
       };
 
       artifacts.push(artifact);

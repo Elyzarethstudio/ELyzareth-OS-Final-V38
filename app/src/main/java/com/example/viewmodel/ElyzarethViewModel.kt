@@ -189,10 +189,48 @@ class ElyzarethViewModel(application: Application) : AndroidViewModel(applicatio
             _uiState.value = _uiState.value.copy(
                 selectedBaseTitle = currentTitle.copy(
                     notes = notes,
-                    status = if (markVerified) "VERIFIED" else currentTitle.status,
+                    status = if (markVerified) "RELEASE READY" else currentTitle.status,
                     containsAmbiguity = false
                 ),
                 scanMessage = "Human Governor Decision Recorded for ${currentTitle.baseTitle}"
+            )
+        }
+    }
+
+    fun setArtifactStatus(artifact: ArtifactEntity, newStatus: String, reason: String? = null, parseError: String? = null) {
+        viewModelScope.launch {
+            repository.updateArtifactStatus(artifact, newStatus, reason, parseError)
+            // Update in-memory selected artifact if it's open
+            if (_uiState.value.selectedArtifactForDetail?.id == artifact.id) {
+                _uiState.value = _uiState.value.copy(
+                    selectedArtifactForDetail = artifact.copy(
+                        status = newStatus,
+                        reviewReason = reason,
+                        parseError = parseError,
+                        requiresHumanReview = (newStatus == "CURATION REQUIRED" || newStatus == "FAILED" || newStatus == "DEFECTIVE")
+                    )
+                )
+            }
+            _uiState.value = _uiState.value.copy(
+                scanMessage = "Artifact ${artifact.filename} transition -> $newStatus"
+            )
+        }
+    }
+
+    fun setBaseTitleStatus(baseTitle: BaseTitleEntity, newStatus: String, notes: String? = null) {
+        viewModelScope.launch {
+            repository.updateBaseTitleStatus(baseTitle, newStatus, notes)
+            if (_uiState.value.selectedBaseTitle?.id == baseTitle.id) {
+                _uiState.value = _uiState.value.copy(
+                    selectedBaseTitle = baseTitle.copy(
+                        status = newStatus,
+                        notes = notes ?: baseTitle.notes,
+                        containsAmbiguity = (newStatus == "CURATION REQUIRED" || newStatus == "FAILED" || newStatus == "DEFECTIVE")
+                    )
+                )
+            }
+            _uiState.value = _uiState.value.copy(
+                scanMessage = "Title ${baseTitle.baseTitle} transition -> $newStatus"
             )
         }
     }

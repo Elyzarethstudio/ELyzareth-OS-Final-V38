@@ -103,6 +103,16 @@ export default function Component() {
 
             <div className="flex items-center gap-2 w-full sm:w-auto">
               <button
+                onClick={handleExportManifest}
+                disabled={!report}
+                className="px-3.5 py-1.5 rounded-lg font-semibold flex items-center gap-1.5 transition-all border bg-slate-800 hover:bg-slate-700 text-cyan-300 border-slate-700"
+                title="Export compressed JSON manifest for forensic verification"
+              >
+                <Download className="w-3.5 h-3.5 text-cyan-400" />
+                <span>Export Corpus Manifest</span>
+              </button>
+
+              <button
                 onClick={() => setProtocolActivated(true)}
                 disabled={!report}
                 className={`px-3.5 py-1.5 rounded-lg font-semibold flex items-center gap-1.5 transition-all border ${
@@ -141,14 +151,14 @@ export default function Component() {
               <div>
                 <h3 className="text-base font-bold text-slate-200">NO CORPUS DISCOVERY DATA</h3>
                 <p className="text-xs text-slate-500 mt-1 max-w-md">
-                  Select your local corpus directory using your browser or run the 950+ artifact real corpus dry run.
+                  Select your local corpus directory using your browser or run the 510 artifact real corpus discovery baseline.
                 </p>
               </div>
               <button
                 onClick={handleSimulateDryRun}
                 className="px-5 py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg font-semibold text-xs transition-all shadow-lg"
               >
-                Run 950+ Artifact Real Corpus Dry Run
+                Run 510 Artifact Real Corpus Baseline
               </button>
             </div>
           )}

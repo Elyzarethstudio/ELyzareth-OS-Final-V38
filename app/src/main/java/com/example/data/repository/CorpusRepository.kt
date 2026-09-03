@@ -248,8 +248,36 @@ class CorpusRepository(
     ) = withContext(Dispatchers.IO) {
         val updated = baseTitle.copy(
             notes = notes,
-            status = if (markVerified) "VERIFIED" else baseTitle.status,
+            status = if (markVerified) "RELEASE READY" else baseTitle.status,
             containsAmbiguity = false
+        )
+        dao.updateBaseTitle(updated)
+    }
+
+    suspend fun updateArtifactStatus(
+        artifact: ArtifactEntity,
+        newStatus: String,
+        reason: String? = null,
+        parseError: String? = null
+    ) = withContext(Dispatchers.IO) {
+        val updated = artifact.copy(
+            status = newStatus,
+            reviewReason = reason,
+            parseError = parseError,
+            requiresHumanReview = (newStatus == "CURATION REQUIRED" || newStatus == "FAILED" || newStatus == "DEFECTIVE")
+        )
+        dao.updateArtifact(updated)
+    }
+
+    suspend fun updateBaseTitleStatus(
+        baseTitle: BaseTitleEntity,
+        newStatus: String,
+        notes: String? = null
+    ) = withContext(Dispatchers.IO) {
+        val updated = baseTitle.copy(
+            status = newStatus,
+            notes = notes ?: baseTitle.notes,
+            containsAmbiguity = (newStatus == "CURATION REQUIRED" || newStatus == "FAILED" || newStatus == "DEFECTIVE")
         )
         dao.updateBaseTitle(updated)
     }
