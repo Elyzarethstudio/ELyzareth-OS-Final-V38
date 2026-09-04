@@ -239,6 +239,30 @@ class ElyzarethViewModel(application: Application) : AndroidViewModel(applicatio
         _uiState.value = _uiState.value.copy(reviewNotesInput = notes)
     }
 
+    fun setScanMessage(message: String) {
+        _uiState.value = _uiState.value.copy(scanMessage = message)
+    }
+
+    fun releaseAndFreezeBaseTitle(baseTitle: BaseTitleEntity) {
+        setBaseTitleStatus(baseTitle, "RELEASED & FROZEN", "Cryptographically frozen & released by Curator.")
+    }
+
+    fun rejectAndArchiveBaseTitle(baseTitle: BaseTitleEntity, reason: String? = null) {
+        setBaseTitleStatus(baseTitle, "REJECTED & ARCHIVED", reason ?: "Defective item rejected & archived from release pipeline.")
+    }
+
+    fun releaseAndFreezeArtifact(artifact: ArtifactEntity) {
+        setArtifactStatus(artifact, "RELEASED & FROZEN", "Cryptographically frozen & released by Curator.")
+    }
+
+    fun rejectAndArchiveArtifact(artifact: ArtifactEntity, reason: String? = null) {
+        setArtifactStatus(artifact, "REJECTED & ARCHIVED", reason ?: "Defective artifact archived.")
+    }
+
+    fun repairArtifact(artifact: ArtifactEntity) {
+        setArtifactStatus(artifact, "CURATION REQUIRED", "Repaired during curator diagnostic session.", parseError = null)
+    }
+
     fun exportManifest() {
         val titles = baseTitles.value
         val artifacts = allArtifacts.value

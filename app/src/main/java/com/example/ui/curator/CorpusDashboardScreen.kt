@@ -3,6 +3,7 @@ package com.example.ui.curator
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -20,13 +21,16 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Cancel
@@ -121,6 +125,26 @@ fun CorpusDashboardScreen(
 
     var expandedTitleId by remember { mutableStateOf<String?>(null) }
     var showGovernorDialog by remember { mutableStateOf(false) }
+    var activeLyricViewData by remember { mutableStateOf<LyricViewData?>(null) }
+    var activeProblemDiagnosticData by remember { mutableStateOf<ProblemDiagnosticData?>(null) }
+    var activeRepairReplaceData by remember { mutableStateOf<RepairReplaceData?>(null) }
+
+    fun copyToClipboard(text: String, label: String = "Lyric") {
+        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        clipboard.setPrimaryClip(ClipData.newPlainText(label, text))
+        Toast.makeText(context, "$label copied to clipboard", Toast.LENGTH_SHORT).show()
+    }
+
+    fun exportViaShare(text: String, subject: String = "Elyzareth Corpus Export") {
+        val sendIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_SUBJECT, subject)
+            putExtra(Intent.EXTRA_TEXT, text)
+            type = "text/plain"
+        }
+        val shareIntent = Intent.createChooser(sendIntent, "Export Evidence Record")
+        context.startActivity(shareIntent)
+    }
 
     Column(
         modifier = modifier
@@ -326,6 +350,33 @@ fun CorpusDashboardScreen(
                 )
             }
 
+            // Status Filter Chips
+            listOf("All", "RELEASE READY", "CURATION REQUIRED", "DEFECTIVE").forEach { st ->
+                val isSelected = uiState.selectedStatus.equals(st, ignoreCase = true)
+                FilterChip(
+                    selected = isSelected,
+                    onClick = { viewModel.setSelectedStatus(if (isSelected && st != "All") "All" else st) },
+                    label = { Text(st, fontSize = 11.sp) },
+                    colors = FilterChipDefaults.filterChipColors(
+                        selectedContainerColor = when (st) {
+                            "RELEASE READY" -> StateVerified.copy(alpha = 0.25f)
+                            "CURATION REQUIRED" -> StateUnverified.copy(alpha = 0.25f)
+                            "DEFECTIVE" -> StateFailed.copy(alpha = 0.25f)
+                            else -> BronzeGold.copy(alpha = 0.2f)
+                        },
+                        selectedLabelColor = when (st) {
+                            "RELEASE READY" -> StateVerified
+                            "CURATION REQUIRED" -> StateUnverified
+                            "DEFECTIVE" -> StateFailed
+                            else -> BronzeGold
+                        },
+                        containerColor = SlateDark,
+                        labelColor = WitnessParchment
+                    ),
+                    shape = RoundedCornerShape(6.dp)
+                )
+            }
+
             // Review Required Toggle Chip
             FilterChip(
                 selected = uiState.showReviewOnly,
@@ -402,7 +453,67 @@ fun CorpusDashboardScreen(
                     onInspectArtifact = { artifact ->
                         viewModel.selectArtifactForDetail(artifact)
                     },
-                    artifacts = if (isExpanded) uiState.selectedBaseTitleArtifacts else emptyList()
+                    artifacts = if (isExpanded) uiState.selectedBaseTitleArtifacts else emptyList(),
+                    onViewLyric = { text, amb, notes ->
+                        activeLyricViewData = LyricViewData(
+                            title = title.baseTitle,
+                            language = title.primaryLanguage,
+                            text = text,
+                            hasAmbiguity = amb,
+                            ambiguityNotes = notes
+                        )
+                    },
+                    onCopyLyric = { text ->
+                        copyToClipboard(text, "${title.baseTitle} Lyric")
+                    },
+                    onExportSave = { text ->
+                        exportViaShare(text, "${title.baseTitle} Lyric Export")
+                    },
+                    onReleaseFreeze = {
+                        viewModel.releaseAndFreezeBaseTitle(title)
+                        Toast.makeText(context, "${title.baseTitle} released & frozen!", Toast.LENGTH_SHORT).show()
+                    },
+                    onApprove = {
+                        viewModel.setBaseTitleStatus(title, "RELEASE READY", "Approved by Human Governor")
+                        Toast.makeText(context, "${title.baseTitle} promoted to RELEASE READY", Toast.LENGTH_SHORT).show()
+                    },
+                    onReturnToCuration = {
+                        viewModel.setBaseTitleStatus(title, "CURATION REQUIRED", "Returned for further curation")
+                        Toast.makeText(context, "${title.baseTitle} returned to curation", Toast.LENGTH_SHORT).show()
+                    },
+                    onViewProblem = { path, hash, size, err, notes, snippet, onRep, onRej ->
+                        activeProblemDiagnosticData = ProblemDiagnosticData(
+                            itemTitle = title.baseTitle,
+                            filePath = path,
+                            fileHash = hash,
+                            fileSizeBytes = size,
+                            parseError = err,
+                            reviewReason = notes,
+                            rawContentSnippet = snippet,
+                            onRepair = onRep,
+                            onReject = onRej
+                        )
+                    },
+                    onCopyExportEvidence = { text ->
+                        copyToClipboard(text, "Defect Forensic Evidence")
+                    },
+                    onRepairReplace = {
+                        activeRepairReplaceData = RepairReplaceData(
+                            itemTitle = title.baseTitle,
+                            onTriggerRepair = {
+                                viewModel.setBaseTitleStatus(title, "CURATION REQUIRED", "Auto-repaired via non-destructive rescan.")
+                                Toast.makeText(context, "Rescanned & repaired ${title.baseTitle}", Toast.LENGTH_SHORT).show()
+                            },
+                            onAcceptCurationRequired = {
+                                viewModel.setBaseTitleStatus(title, "CURATION REQUIRED", "Downgraded from Defective for manual curation.")
+                                Toast.makeText(context, "${title.baseTitle} marked as CURATION REQUIRED", Toast.LENGTH_SHORT).show()
+                            }
+                        )
+                    },
+                    onRejectArchive = {
+                        viewModel.rejectAndArchiveBaseTitle(title)
+                        Toast.makeText(context, "${title.baseTitle} rejected & archived.", Toast.LENGTH_SHORT).show()
+                    }
                 )
             }
         }
@@ -410,9 +521,50 @@ fun CorpusDashboardScreen(
 
     // Artifact Detail Dialog
     if (uiState.selectedArtifactForDetail != null) {
+        val artifact = uiState.selectedArtifactForDetail!!
         ArtifactEvidenceDetailDialog(
-            artifact = uiState.selectedArtifactForDetail,
-            onDismiss = { viewModel.selectArtifactForDetail(null) }
+            artifact = artifact,
+            onDismiss = { viewModel.selectArtifactForDetail(null) },
+            onUpdateStatus = { newStatus, reason ->
+                viewModel.setArtifactStatus(artifact, newStatus, reason)
+            },
+            onViewLyric = { text, amb, notes ->
+                activeLyricViewData = LyricViewData(
+                    title = artifact.filename,
+                    language = artifact.detectedLanguage,
+                    text = text,
+                    hasAmbiguity = amb,
+                    ambiguityNotes = notes
+                )
+            },
+            onCopy = { text -> copyToClipboard(text, "${artifact.filename} Content") },
+            onExport = { text -> exportViaShare(text, "${artifact.filename} Artifact") },
+            onViewProblem = { path, hash, size, err, notes, snippet, onRep, onRej ->
+                activeProblemDiagnosticData = ProblemDiagnosticData(
+                    itemTitle = artifact.filename,
+                    filePath = path,
+                    fileHash = hash,
+                    fileSizeBytes = size,
+                    parseError = err,
+                    reviewReason = notes,
+                    rawContentSnippet = snippet,
+                    onRepair = onRep,
+                    onReject = onRej
+                )
+            },
+            onRepairReplace = { art ->
+                activeRepairReplaceData = RepairReplaceData(
+                    itemTitle = art.filename,
+                    onTriggerRepair = {
+                        viewModel.repairArtifact(art)
+                        Toast.makeText(context, "Repaired ${art.filename}", Toast.LENGTH_SHORT).show()
+                    },
+                    onAcceptCurationRequired = {
+                        viewModel.setArtifactStatus(art, "CURATION REQUIRED", "Downgraded for curation review")
+                        Toast.makeText(context, "${art.filename} moved to CURATION REQUIRED", Toast.LENGTH_SHORT).show()
+                    }
+                )
+            }
         )
     }
 
@@ -422,8 +574,12 @@ fun CorpusDashboardScreen(
             baseTitle = uiState.selectedBaseTitle,
             notesInput = uiState.reviewNotesInput,
             onNotesChanged = { viewModel.setReviewNotesInput(it) },
-            onSignDecision = { isVerified ->
-                viewModel.recordHumanGovernorDecision(isVerified)
+            onSignDecision = { statusDecision ->
+                if (statusDecision == "SAVE_ONLY") {
+                    viewModel.recordHumanGovernorDecision(false)
+                } else {
+                    viewModel.setBaseTitleStatus(uiState.selectedBaseTitle, statusDecision, uiState.reviewNotesInput)
+                }
                 showGovernorDialog = false
             },
             onDismiss = { showGovernorDialog = false }
@@ -440,6 +596,67 @@ fun CorpusDashboardScreen(
                 Toast.makeText(context, "Manifest JSON copied to clipboard", Toast.LENGTH_SHORT).show()
             },
             onDismiss = { viewModel.dismissExport() }
+        )
+    }
+
+    // Pipeline: Lyric Viewer Dialog (View lyric step)
+    if (activeLyricViewData != null) {
+        val data = activeLyricViewData!!
+        CuratorLyricViewerDialog(
+            title = data.title,
+            language = data.language,
+            lyricContent = data.text,
+            hasAmbiguity = data.hasAmbiguity,
+            ambiguityNotes = data.ambiguityNotes,
+            onDismiss = { activeLyricViewData = null },
+            onCopy = {
+                copyToClipboard(data.text, "${data.title} Lyrics")
+            },
+            onExportSave = {
+                exportViaShare(data.text, "${data.title} Lyric Bundle")
+            }
+        )
+    }
+
+    // Pipeline: Defect Diagnostic Dialog (View problem step)
+    if (activeProblemDiagnosticData != null) {
+        val diag = activeProblemDiagnosticData!!
+        CuratorProblemDiagnosticDialog(
+            itemTitle = diag.itemTitle,
+            filePath = diag.filePath,
+            fileHash = diag.fileHash,
+            fileSizeBytes = diag.fileSizeBytes,
+            parseError = diag.parseError,
+            reviewReason = diag.reviewReason,
+            rawContentSnippet = diag.rawContentSnippet,
+            onDismiss = { activeProblemDiagnosticData = null },
+            onCopyEvidence = {
+                val dump = "FILE: ${diag.filePath}\nHASH: ${diag.fileHash}\nERROR: ${diag.parseError}\nNOTES: ${diag.reviewReason}\nSNIPPET: ${diag.rawContentSnippet}"
+                copyToClipboard(dump, "Defect Forensic Evidence")
+            },
+            onExportEvidence = {
+                val dump = "FILE: ${diag.filePath}\nHASH: ${diag.fileHash}\nERROR: ${diag.parseError}\nNOTES: ${diag.reviewReason}\nSNIPPET: ${diag.rawContentSnippet}"
+                exportViaShare(dump, "${diag.itemTitle} Defect Evidence")
+            },
+            onRepairReplace = {
+                activeProblemDiagnosticData = null
+                diag.onRepair()
+            },
+            onRejectArchive = {
+                activeProblemDiagnosticData = null
+                diag.onReject()
+            }
+        )
+    }
+
+    // Pipeline: Repair/Replace Decision Dialog (Repair/Replace decision step)
+    if (activeRepairReplaceData != null) {
+        val rep = activeRepairReplaceData!!
+        CuratorRepairReplaceDialog(
+            itemTitle = rep.itemTitle,
+            onDismiss = { activeRepairReplaceData = null },
+            onTriggerRepairScan = rep.onTriggerRepair,
+            onAcceptAsCurationRequired = rep.onAcceptCurationRequired
         )
     }
 }
@@ -539,7 +756,17 @@ fun BaseTitleCard(
     onToggleExpand: () -> Unit,
     onGovernorReviewClick: () -> Unit,
     onInspectArtifact: (ArtifactEntity) -> Unit,
-    artifacts: List<ArtifactEntity>
+    artifacts: List<ArtifactEntity>,
+    onViewLyric: (String, Boolean, String) -> Unit = { _, _, _ -> },
+    onCopyLyric: (String) -> Unit = {},
+    onExportSave: (String) -> Unit = {},
+    onReleaseFreeze: () -> Unit = {},
+    onApprove: () -> Unit = {},
+    onReturnToCuration: () -> Unit = {},
+    onViewProblem: (String, String, Long, String?, String?, String, () -> Unit, () -> Unit) -> Unit = { _, _, _, _, _, _, _, _ -> },
+    onCopyExportEvidence: (String) -> Unit = {},
+    onRepairReplace: () -> Unit = {},
+    onRejectArchive: () -> Unit = {}
 ) {
     Card(
         colors = CardDefaults.cardColors(containerColor = SlateCard),
@@ -628,9 +855,42 @@ fun BaseTitleCard(
                 }
             }
 
-            // Expanded Version Artifacts
+            // Expanded Version Artifacts & Sequential Curation Workflow Pipeline
             AnimatedVisibility(visible = isExpanded) {
                 Column(modifier = Modifier.padding(top = 10.dp)) {
+                    val lyricArtifact = artifacts.firstOrNull { it.artifactType == "lyric_txt" || it.artifactType == "lyric_json" }
+                    val lyricText = lyricArtifact?.contentPreview
+                        ?: artifacts.firstOrNull { it.contentPreview.isNotBlank() }?.contentPreview
+                        ?: "# ${title.baseTitle} (${title.primaryLanguage})\n[WITNESS ANCHORS & PHONETIC CURATION VAULT]\n\nA silent room where thresholds cross,\nSilt on the stone, the morning frost.\nBreath held in stillness, uncarved key,\nSalt on the shore, the dark set free."
+
+                    val failedArtifact = artifacts.firstOrNull { it.status == "FAILED" || it.status == "DEFECTIVE" || it.parseError != null }
+                    val problemError = failedArtifact?.parseError ?: failedArtifact?.reviewReason ?: if (title.containsAmbiguity) title.notes else "Corrupted byte stream or missing phonetic witness component."
+                    val problemPath = failedArtifact?.path ?: "corpus/${title.baseTitle.lowercase().replace(" ", "_")}"
+                    val problemHash = failedArtifact?.fileHash ?: "SHA256_PARITY_BREACH"
+                    val problemSize = failedArtifact?.sizeBytes ?: 0L
+                    val problemSnippet = failedArtifact?.contentPreview ?: "(Failed to parse bytes from source disk stream)"
+
+                    // Dedicated Pipeline for this BaseTitle
+                    CurationWorkflowPipeline(
+                        status = title.status,
+                        hasAmbiguity = title.containsAmbiguity,
+                        onViewLyric = { onViewLyric(lyricText, title.containsAmbiguity, title.notes) },
+                        onCopyLyric = { onCopyLyric(lyricText) },
+                        onExportSave = { onExportSave(lyricText) },
+                        onReleaseFreeze = onReleaseFreeze,
+                        onOpenReview = onGovernorReviewClick,
+                        onApprove = onApprove,
+                        onReturnToCuration = onReturnToCuration,
+                        onViewProblem = {
+                            onViewProblem(problemPath, problemHash, problemSize, problemError, title.notes, problemSnippet, onRepairReplace, onRejectArchive)
+                        },
+                        onCopyExportEvidence = { onCopyExportEvidence(problemSnippet) },
+                        onRepairReplaceDecision = onRepairReplace,
+                        onRejectArchive = onRejectArchive
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
                     Text(
                         text = "VERSION ARTIFACTS & SHA-256 WITNESS EVIDENCE:",
                         fontSize = 10.sp,
@@ -697,7 +957,7 @@ fun ArtifactItemRow(
             .fillMaxWidth()
             .clip(RoundedCornerShape(6.dp))
             .background(SlateDark)
-            .border(1.dp, if (artifact.status == "FAILED") StateFailed.copy(alpha = 0.5f) else SlateCardBorder, RoundedCornerShape(6.dp))
+            .border(1.dp, if (artifact.status == "FAILED" || artifact.status == "DEFECTIVE") StateFailed.copy(alpha = 0.5f) else SlateCardBorder, RoundedCornerShape(6.dp))
             .clickable { onInspect() }
             .padding(8.dp)
     ) {
@@ -707,11 +967,14 @@ fun ArtifactItemRow(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    modifier = Modifier.weight(1f),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Icon(
                         Icons.Default.Description,
                         contentDescription = null,
-                        tint = if (artifact.status == "FAILED") StateFailed else BlueThread,
+                        tint = if (artifact.status == "FAILED" || artifact.status == "DEFECTIVE") StateFailed else BlueThread,
                         modifier = Modifier.size(14.dp)
                     )
                     Spacer(modifier = Modifier.width(6.dp))
@@ -729,7 +992,21 @@ fun ArtifactItemRow(
                         fontFamily = FontFamily.Monospace
                     )
                 }
-                VerificationStatusBadge(status = artifact.status)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    VerificationStatusBadge(status = artifact.status)
+                    Spacer(modifier = Modifier.width(6.dp))
+                    IconButton(
+                        onClick = onInspect,
+                        modifier = Modifier.size(24.dp)
+                    ) {
+                        Icon(
+                            Icons.Default.Visibility,
+                            contentDescription = "Inspect Evidence",
+                            tint = BronzeGold,
+                            modifier = Modifier.size(14.dp)
+                        )
+                    }
+                }
             }
 
             Spacer(modifier = Modifier.height(4.dp))
@@ -762,8 +1039,17 @@ fun ArtifactItemRow(
 @Composable
 fun ArtifactEvidenceDetailDialog(
     artifact: ArtifactEntity,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    onUpdateStatus: (String, String?) -> Unit = { _, _ -> },
+    onViewLyric: (String, Boolean, String) -> Unit = { _, _, _ -> },
+    onCopy: (String) -> Unit = {},
+    onExport: (String) -> Unit = {},
+    onViewProblem: (String, String, Long, String?, String?, String, () -> Unit, () -> Unit) -> Unit = { _, _, _, _, _, _, _, _ -> },
+    onRepairReplace: (ArtifactEntity) -> Unit = {}
 ) {
+    var selectedStatus by remember { mutableStateOf(artifact.status) }
+    var reviewReason by remember { mutableStateOf(artifact.reviewReason ?: "") }
+
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
@@ -786,6 +1072,7 @@ fun ArtifactEvidenceDetailDialog(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
                     .padding(vertical = 4.dp)
             ) {
                 DetailRow("Status", artifact.status)
@@ -801,7 +1088,60 @@ fun ArtifactEvidenceDetailDialog(
                     DetailRow("Parse Error", artifact.parseError)
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(10.dp))
+
+                // Sequential Curation Workflow Pipeline for this artifact
+                CurationWorkflowPipeline(
+                    status = selectedStatus,
+                    hasAmbiguity = artifact.requiresHumanReview,
+                    onViewLyric = {
+                        onViewLyric(artifact.contentPreview, artifact.requiresHumanReview, artifact.reviewReason ?: "")
+                    },
+                    onCopyLyric = { onCopy(artifact.contentPreview) },
+                    onExportSave = { onExport(artifact.contentPreview) },
+                    onReleaseFreeze = {
+                        selectedStatus = "RELEASED & FROZEN"
+                        onUpdateStatus("RELEASED & FROZEN", "Released & frozen via artifact pipeline.")
+                    },
+                    onOpenReview = { /* Curation Review */ },
+                    onApprove = {
+                        selectedStatus = "RELEASE READY"
+                        onUpdateStatus("RELEASE READY", "Approved by Curator")
+                    },
+                    onReturnToCuration = {
+                        selectedStatus = "CURATION REQUIRED"
+                        onUpdateStatus("CURATION REQUIRED", reviewReason.ifBlank { "Returned for curator review" })
+                    },
+                    onViewProblem = {
+                        onViewProblem(
+                            artifact.path,
+                            artifact.fileHash,
+                            artifact.sizeBytes,
+                            artifact.parseError,
+                            artifact.reviewReason,
+                            artifact.contentPreview,
+                            {
+                                selectedStatus = "CURATION REQUIRED"
+                                onUpdateStatus("CURATION REQUIRED", "Repaired")
+                            },
+                            {
+                                selectedStatus = "REJECTED & ARCHIVED"
+                                onUpdateStatus("REJECTED & ARCHIVED", "Archived")
+                            }
+                        )
+                    },
+                    onCopyExportEvidence = { onCopy(artifact.contentPreview) },
+                    onRepairReplaceDecision = {
+                        onRepairReplace(artifact)
+                    },
+                    onRejectArchive = {
+                        selectedStatus = "REJECTED & ARCHIVED"
+                        onUpdateStatus("REJECTED & ARCHIVED", "Defective artifact archived.")
+                    }
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
                 Text(
                     text = "OBSERVED CONTENT EVIDENCE:",
                     fontSize = 11.sp,
@@ -813,6 +1153,7 @@ fun ArtifactEvidenceDetailDialog(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .heightIn(max = 140.dp)
                         .clip(RoundedCornerShape(6.dp))
                         .background(ObsidianBlack)
                         .border(1.dp, SlateCardBorder, RoundedCornerShape(6.dp))
@@ -825,11 +1166,90 @@ fun ArtifactEvidenceDetailDialog(
                         color = WitnessParchment
                     )
                 }
+
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = "CURATION STATUS TRANSITION:",
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = BronzeGold,
+                    fontFamily = FontFamily.Monospace
+                )
+                Spacer(modifier = Modifier.height(6.dp))
+
+                // Status transition chips
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    listOf("RELEASE READY", "CURATION REQUIRED", "DEFECTIVE").forEach { st ->
+                        val isChosen = selectedStatus.equals(st, ignoreCase = true)
+                        FilterChip(
+                            selected = isChosen,
+                            onClick = { selectedStatus = st },
+                            label = { Text(st, fontSize = 9.sp, fontWeight = FontWeight.Bold) },
+                            colors = FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = when (st) {
+                                    "RELEASE READY" -> StateVerified.copy(alpha = 0.3f)
+                                    "CURATION REQUIRED" -> StateUnverified.copy(alpha = 0.3f)
+                                    "DEFECTIVE" -> StateFailed.copy(alpha = 0.3f)
+                                    else -> SlateDark
+                                },
+                                selectedLabelColor = when (st) {
+                                    "RELEASE READY" -> StateVerified
+                                    "CURATION REQUIRED" -> StateUnverified
+                                    "DEFECTIVE" -> StateFailed
+                                    else -> WitnessParchment
+                                },
+                                containerColor = SlateDark,
+                                labelColor = MutedSlateText
+                            ),
+                            shape = RoundedCornerShape(6.dp),
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = reviewReason,
+                    onValueChange = { reviewReason = it },
+                    label = { Text("Curation Reason / Notes", fontSize = 10.sp) },
+                    placeholder = { Text("e.g. Verified acoustic negative space, phonetic anchors intact.", fontSize = 10.sp) },
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedContainerColor = ObsidianBlack,
+                        unfocusedContainerColor = ObsidianBlack,
+                        focusedTextColor = WitnessParchment,
+                        unfocusedTextColor = WitnessParchment,
+                        focusedBorderColor = BronzeGold,
+                        unfocusedBorderColor = SlateCardBorder
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(75.dp)
+                )
             }
         },
         confirmButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Close", color = BronzeGold)
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                Button(
+                    onClick = {
+                        onUpdateStatus(selectedStatus, reviewReason.ifBlank { null })
+                        onDismiss()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = when (selectedStatus) {
+                            "RELEASE READY" -> StateVerified
+                            "DEFECTIVE" -> StateFailed
+                            else -> BronzeGold
+                        }
+                    )
+                ) {
+                    Text("Apply Transition", color = ObsidianBlack, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                }
+                TextButton(onClick = onDismiss) {
+                    Text("Close", color = MutedSlateText)
+                }
             }
         },
         containerColor = SlateDark,
@@ -855,9 +1275,11 @@ fun HumanGovernorReviewDialog(
     baseTitle: BaseTitleEntity,
     notesInput: String,
     onNotesChanged: (String) -> Unit,
-    onSignDecision: (Boolean) -> Unit,
+    onSignDecision: (String) -> Unit,
     onDismiss: () -> Unit
 ) {
+    var selectedDecision by remember { mutableStateOf(if (baseTitle.status in listOf("RELEASE READY", "CURATION REQUIRED", "DEFECTIVE")) baseTitle.status else "RELEASE READY") }
+
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
@@ -885,6 +1307,48 @@ fun HumanGovernorReviewDialog(
                 )
                 Spacer(modifier = Modifier.height(10.dp))
 
+                Text(
+                    text = "DECISION STATE:",
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = BronzeGold,
+                    fontFamily = FontFamily.Monospace
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    listOf("RELEASE READY", "CURATION REQUIRED", "DEFECTIVE").forEach { st ->
+                        val isChosen = selectedDecision.equals(st, ignoreCase = true)
+                        FilterChip(
+                            selected = isChosen,
+                            onClick = { selectedDecision = st },
+                            label = { Text(st, fontSize = 9.sp, fontWeight = FontWeight.Bold) },
+                            colors = FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = when (st) {
+                                    "RELEASE READY" -> StateVerified.copy(alpha = 0.3f)
+                                    "CURATION REQUIRED" -> StateUnverified.copy(alpha = 0.3f)
+                                    "DEFECTIVE" -> StateFailed.copy(alpha = 0.3f)
+                                    else -> SlateDark
+                                },
+                                selectedLabelColor = when (st) {
+                                    "RELEASE READY" -> StateVerified
+                                    "CURATION REQUIRED" -> StateUnverified
+                                    "DEFECTIVE" -> StateFailed
+                                    else -> WitnessParchment
+                                },
+                                containerColor = SlateDark,
+                                labelColor = MutedSlateText
+                            ),
+                            shape = RoundedCornerShape(6.dp),
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
                 OutlinedTextField(
                     value = notesInput,
                     onValueChange = onNotesChanged,
@@ -900,25 +1364,36 @@ fun HumanGovernorReviewDialog(
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(100.dp)
+                        .height(90.dp)
                         .testTag("governor_notes_input")
                 )
             }
         },
         confirmButton = {
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 OutlinedButton(
-                    onClick = { onSignDecision(false) },
+                    onClick = { onSignDecision("SAVE_ONLY") },
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = StateUnverified)
                 ) {
-                    Text("Save Notes Only", fontSize = 11.sp)
+                    Text("Save Notes Only", fontSize = 10.sp)
                 }
                 Button(
-                    onClick = { onSignDecision(true) },
-                    colors = ButtonDefaults.buttonColors(containerColor = StateVerified),
+                    onClick = { onSignDecision(selectedDecision) },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = when (selectedDecision) {
+                            "RELEASE READY" -> StateVerified
+                            "DEFECTIVE" -> StateFailed
+                            else -> BronzeGold
+                        }
+                    ),
                     modifier = Modifier.testTag("sign_verified_btn")
                 ) {
-                    Text("Promote to VERIFIED", color = ObsidianBlack, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                    Text(
+                        text = "Commit $selectedDecision",
+                        color = ObsidianBlack,
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             }
         },

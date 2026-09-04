@@ -41,8 +41,10 @@ fun VerificationStatusBadge(
 ) {
     val (bgColor, textColor, label) = when (status.uppercase()) {
         "RELEASE READY", "RELEASE_READY" -> Triple(StateVerified.copy(alpha = 0.25f), StateVerified, "RELEASE READY")
+        "RELEASED & FROZEN", "RELEASED_FROZEN", "FROZEN" -> Triple(StateVerified.copy(alpha = 0.35f), StateVerified, "RELEASED & FROZEN")
         "CURATION REQUIRED", "CURATION_REQUIRED" -> Triple(StateUnverified.copy(alpha = 0.25f), StateUnverified, "CURATION REQUIRED")
         "DEFECTIVE" -> Triple(StateFailed.copy(alpha = 0.25f), StateFailed, "DEFECTIVE")
+        "REJECTED & ARCHIVED", "REJECTED", "ARCHIVED" -> Triple(StateFailed.copy(alpha = 0.15f), StateFailed.copy(alpha = 0.7f), "REJECTED / ARCHIVED")
         "PARSED" -> Triple(StateParsed.copy(alpha = 0.2f), StateParsed, "PARSED")
         "VERIFIED" -> Triple(StateVerified.copy(alpha = 0.2f), StateVerified, "VERIFIED")
         "FAILED" -> Triple(StateFailed.copy(alpha = 0.25f), StateFailed, "FAILED")
