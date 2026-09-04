@@ -770,8 +770,8 @@ fun CuratorRepairReplaceDialog(
                         Icon(Icons.Default.Refresh, contentDescription = null, tint = StateVerified, modifier = Modifier.size(20.dp))
                         Spacer(modifier = Modifier.width(10.dp))
                         Column {
-                            Text("Auto-Repair & Re-Parse Non-Destructively", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = WitnessParchment)
-                            Text("Attempts relaxed phonetic parsing and sanitizes encoding errors.", fontSize = 10.sp, color = MutedSlateText)
+                            Text("Produce New Artifact & Run Validation Pipeline", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = WitnessParchment)
+                            Text("Generates new replacement artifact → Computes SHA-256 parity → Runs PCM / phonetic validation → Promotes to CURATION REQUIRED for Human Governor review.", fontSize = 10.sp, color = MutedSlateText)
                         }
                     }
                 }
