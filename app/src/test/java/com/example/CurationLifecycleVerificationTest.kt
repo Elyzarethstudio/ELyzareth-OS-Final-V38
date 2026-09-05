@@ -108,4 +108,41 @@ class CurationLifecycleVerificationTest {
         assertEquals("Cryptographically frozen & released by Curator. SHA-256 Parity Locked.", reloadedTitle.notes)
         assertFalse(reloadedTitle.containsAmbiguity)
     }
+
+    @Test
+    fun `verify corpus inventory bounds with 1000 plus simulated SAF records`() = runBlocking {
+        val dao = database.elyzarethDao()
+        
+        // Clear bootstrap records to simulate fresh SAF ingestion of 1,000+ files
+        dao.clearAllArtifacts()
+        dao.clearAllBaseTitles()
+
+        val simulated1000Titles = (1..1050).map { index ->
+            BaseTitleEntity(
+                id = "saf_title_$index",
+                baseTitle = "SAF Discovered Base Title #$index",
+                artifactsCount = 1,
+                primaryLanguage = if (index % 3 == 0) "Hindi" else "English",
+                hasLyrics = true,
+                hasMetadata = true,
+                hasAudioRef = false,
+                containsAmbiguity = (index % 25 == 0),
+                status = if (index % 25 == 0) "DEFECTIVE" else "RELEASE READY",
+                notes = "Ingested from Storage Access Framework. Index $index"
+            )
+        }
+
+        dao.insertBaseTitles(simulated1000Titles)
+
+        // Verify all 1,050 records are loaded in inventory
+        val loadedTitles = dao.getAllBaseTitles().first()
+        assertEquals(1050, loadedTitles.size)
+
+        // Verify items can be queried by ID and first/last exist in full set
+        val titleMap = loadedTitles.associateBy { it.id }
+        assertTrue(titleMap.containsKey("saf_title_1"))
+        assertTrue(titleMap.containsKey("saf_title_1050"))
+        assertEquals("SAF Discovered Base Title #1", titleMap["saf_title_1"]?.baseTitle)
+        assertEquals("SAF Discovered Base Title #1050", titleMap["saf_title_1050"]?.baseTitle)
+    }
 }
