@@ -25,3 +25,6 @@ dependencyResolutionManagement {
 rootProject.name = "Elyzareth OS"
 
 include(":app")
+include(":core:foundation")
+include(":core:kernel")
+include(":core:shared")

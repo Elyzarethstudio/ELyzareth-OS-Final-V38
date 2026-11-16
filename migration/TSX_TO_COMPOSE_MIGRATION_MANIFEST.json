@@ -1,0 +1,71 @@
+{
+  "manifestVersion": "1.0",
+  "reference": "ELYZARETH_OS_STRUCTURE_1.0",
+  "sourceDirectory": "/elyzareth-app02-curator/src",
+  "targetModules": [":app", ":core:foundation", ":core:kernel", ":core:shared"],
+  "mappings": [
+    {
+      "sourceId": "TSX-001",
+      "sourcePath": "/elyzareth-app02-curator/src/main.tsx",
+      "targetPath": "/app/src/main/java/com/example/MainActivity.kt",
+      "status": "INTEGRATED",
+      "preservation": "RETAINED"
+    },
+    {
+      "sourceId": "TSX-002",
+      "sourcePath": "/elyzareth-app02-curator/src/components/Header.tsx",
+      "targetPath": "/app/src/main/java/com/example/ui/curator/CorpusDashboardScreen.kt",
+      "status": "INTEGRATED",
+      "preservation": "RETAINED"
+    },
+    {
+      "sourceId": "TSX-003",
+      "sourcePath": "/elyzareth-app02-curator/src/components/ReportSummary.tsx",
+      "targetPath": "/app/src/main/java/com/example/ui/curator/CorpusDashboardScreen.kt",
+      "status": "INTEGRATED",
+      "preservation": "RETAINED"
+    },
+    {
+      "sourceId": "TSX-004",
+      "sourcePath": "/elyzareth-app02-curator/src/components/CorpusTable.tsx",
+      "targetPath": "/app/src/main/java/com/example/ui/curator/CorpusDashboardScreen.kt",
+      "status": "INTEGRATED",
+      "preservation": "RETAINED"
+    },
+    {
+      "sourceId": "TSX-005",
+      "sourcePath": "/elyzareth-app02-curator/src/components/ArtifactDetailModal.tsx",
+      "targetPath": "/app/src/main/java/com/example/ui/curator/CurationWorkflowPipeline.kt",
+      "status": "INTEGRATED",
+      "preservation": "RETAINED"
+    },
+    {
+      "sourceId": "TS-006",
+      "sourcePath": "/elyzareth-app02-curator/src/types.ts",
+      "targetPath": "/app/src/main/java/com/example/data/model/CorpusModels.kt",
+      "status": "INTEGRATED",
+      "preservation": "RETAINED"
+    },
+    {
+      "sourceId": "TS-007",
+      "sourcePath": "/elyzareth-app02-curator/src/parser.ts",
+      "targetPath": "/app/src/main/java/com/example/data/repository/CorpusRepository.kt",
+      "status": "INTEGRATED",
+      "preservation": "RETAINED"
+    },
+    {
+      "sourceId": "TS-008",
+      "sourcePath": "/elyzareth-app02-curator/src/db.ts",
+      "targetPath": "/app/src/main/java/com/example/data/local/ElyzarethDatabase.kt",
+      "status": "INTEGRATED",
+      "preservation": "RETAINED"
+    },
+    {
+      "sourceId": "TS-009",
+      "sourcePath": "/elyzareth-app02-curator/src/mockCorpus.ts",
+      "targetPath": "/app/src/main/java/com/example/data/local/CorpusSeedData.kt",
+      "status": "INTEGRATED",
+      "preservation": "RETAINED"
+    }
+  ]
+}

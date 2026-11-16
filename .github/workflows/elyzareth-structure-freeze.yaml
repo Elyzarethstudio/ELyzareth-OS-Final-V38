@@ -1,0 +1,61 @@
+name: Elyzareth OS — Structural Freeze Audit & APK Export (.yaml)
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  structural-freeze-audit:
+    name: Audit ELYZARETH_OS_STRUCTURE_1.0 & Package APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Audit 160 Structural Sub-Branches & Preserved Sources
+        run: |
+          echo "=== ELYZARETH OS STRUCTURAL FREEZE AUDIT ==="
+          test -f documentation/implementation-progress/STRUCTURAL_COMPLETION_REGISTER.md
+          test -f public/elyzareth-os-structure.yaml
+          test -f public/elyzareth-os-structure.yml
+          test -f core/foundation/src/main/java/com/example/foundation/ConstitutionalFoundation.kt
+          test -f core/kernel/src/main/java/com/example/kernel/SovereignKernel.kt
+          test -f core/shared/src/main/java/com/example/shared/SystemUtilitiesAndServices.kt
+          test -f app/src/main/java/com/example/MainActivity.kt
+          test -d elyzareth-app02-curator/src
+          echo "Preserved baseline sources and structural registers verified."
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Setup Gradle 9.3.1
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.3.1'
+
+      - name: Decode Keystore
+        run: |
+          if [ -f debug.keystore.base64 ]; then
+            base64 -d debug.keystore.base64 > debug.keystore
+          fi
+
+      - name: Assemble Latest Debug APK
+        run: |
+          gradle assembleDebug --stacktrace
+
+      - name: Upload Latest APK & YAML Manifests
+        uses: actions/upload-artifact@v4
+        with:
+          name: Elyzareth-OS-Latest-Build-Bundle
+          path: |
+            app/build/outputs/apk/debug/app-debug.apk
+            public/elyzareth-os-structure.yaml
+            public/elyzareth-os-structure.yml
+          retention-days: 30

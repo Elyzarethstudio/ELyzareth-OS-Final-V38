@@ -1,0 +1,38 @@
+# ELYZARETH OS — FROZEN STRUCTURAL MANIFEST (.yml)
+# Reference: ELYZARETH_OS_STRUCTURE_1.0
+# Phase: STRUCTURAL FREEZE
+# Authority: Student-Director / Human Creator
+
+project:
+  name: "ELYZARETH OS"
+  version: "1.0-structure-freeze"
+  reference: "ELYZARETH_OS_STRUCTURE_1.0"
+  phase: "STRUCTURAL_FREEZE"
+  authority: "Student-Director / Human Creator"
+  latest_build_output: "app/build/outputs/apk/debug/app-debug.apk"
+  github_workflows:
+    yml: ".github/workflows/main.yml"
+    yaml: ".github/workflows/elyzareth-structure-freeze.yaml"
+
+settled_architectural_decisions:
+  - id: "ARCH-DEC-01"
+    topic: "Duplicate Creative Factory paths"
+    canonical_path: "creative/creative-factory/"
+    retired_duplicate: "creative-factory/"
+    status: "RECONCILED_EOS_STRUCT_UI_003"
+  - id: "ARCH-DEC-02"
+    topic: "Relationship between top-level foundation/, kernel/, shared/ and :core Gradle modules"
+    authoritative_gradle_modules:
+      - ":core:foundation (core/foundation/)"
+      - ":core:kernel (core/kernel/)"
+      - ":core:shared (core/shared/)"
+    status: "RECONCILED_EOS_STRUCT_UI_003"
+
+status_summary:
+  major_branch_hierarchy: "RECONCILED_AND_COMPLETE"
+  sub_branch_hierarchy: "RECONCILED_AND_COMPLETE"
+  existing_source_preservation: "PRESERVED"
+  duplicate_factory_path: "RECONCILED_TO_CREATIVE_SUBTREE"
+  core_top_level_relationship: "RECONCILED_CORE_MODULES_AUTHORITATIVE"
+  ui_16_destination_consistency: "VERIFIED_COMPLETE"
+  structural_baseline: "FROZEN"

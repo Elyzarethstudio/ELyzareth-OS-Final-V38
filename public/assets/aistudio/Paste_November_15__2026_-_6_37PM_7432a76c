@@ -1,0 +1,1630 @@
+Yes. I recommend giving Argon a **planning and architectural reconciliation assignment first**, not permission to start coding. The purpose is to make the implementation plan complete, resolve contradictions between the Master Blueprint and the repository's own documentation, and establish measurable acceptance criteria.
+
+I have also identified an important issue in the existing documentation: it describes destructive database migration as verified and non-blocking, even though that conflicts with the Master Blueprint's data-preservation requirements. Argon must resolve that contradiction with source evidence, not simply carry the existing status forward.
+
+The following is the instruction I recommend sending.
+
+# ELYZARETH OS — COMPLETE ARCHITECTURAL GAP CLOSURE & IMPLEMENTATION PLAN RECONCILIATION
+
+**Assignment ID:** EOS-ARCH-RECON-001\
+**Target:** Latest uploaded repository `elyzareth-os(4)(1).zip`\
+**Architectural Authority:** ELYZARETH OS — Final Master Blueprint\
+**Decision Authority:** Student-Director / Human Creator\
+**Technical Roles:** GPT — Independent Architect and Auditor; Gemini Argon — Repository Inspector and Implementation Planner\
+**Assignment Type:** READ-ONLY INVESTIGATION, ARCHITECTURAL RECONCILIATION AND PLAN COMPLETION\
+**Implementation Authorization:** NOT GRANTED
+
+---
+
+## 1. MISSION
+
+Conduct a complete architectural gap analysis of the latest Elyzareth OS repository against the Final Master Blueprint.
+
+The objective is to identify everything that is:
+
+1. Missing from the current implementation.
+2. Missing from the existing implementation plan.
+3. Present in the plan but insufficiently specified.
+4. Implemented only as a prototype or placeholder.
+5. Implemented but not compliant with the Master Blueprint.
+6. Incorrectly marked as complete or verified.
+7. Dependent on an unresolved architectural decision.
+8. Necessary for future acceptance but not yet covered by tests.
+
+Produce one consolidated, technically actionable implementation plan.
+
+This assignment is NOT a request to implement the missing features.
+
+Do not modify application code, database schemas, Gradle configuration, dependencies, existing test code, or application behaviour.
+
+Documentation changes are permitted only for the specific reconciliation deliverables described below.
+
+The final result must enable the Student-Director and GPT to approve a complete correction roadmap before any implementation begins.
+
+---
+
+## 2. ARCHITECTURAL AUTHORITY AND SOURCE PRECEDENCE
+
+Use the following authority hierarchy:
+
+**Level 1 — Constitutional authority**
+
+ELYZARETH OS Final Master Blueprint.
+
+Its human sovereignty, evidence integrity, layer monotonicity, mandatory governance, separation of duties, and release authorization requirements are non-negotiable.
+
+**Level 2 — Existing approved architecture**
+
+Existing architecture decisions, approved system boundaries, module dependency rules, data-preservation requirements and previously accepted decisions.
+
+**Level 3 — Current repository**
+
+The actual source code, Gradle configuration, Room schema, tests, migrations, and documentation.
+
+The repository is evidence of what exists. It does not automatically redefine the architecture.
+
+**Level 4 — Historical prototypes**
+
+Old TSX applications, exported OS versions, experimental branches, historical governance systems and previous prototypes.
+
+These are references for selective recovery, not automatic implementation requirements.
+
+### Conflict-resolution rule
+
+If two sources disagree:
+
+- Identify both statements.
+- Identify their source locations.
+- Explain the technical and architectural consequences.
+- Recommend a resolution.
+- Mark the decision as PENDING STUDENT-DIRECTOR APPROVAL if it changes an approved architectural requirement.
+
+Never silently rewrite the Master Blueprint to match the current implementation.
+
+---
+
+## 3. MANDATORY REPOSITORY INSPECTION
+
+Inspect the actual uploaded repository, not merely the existing reports.
+
+At minimum, inspect:
+
+- `settings.gradle.kts`
+- Root and module `build.gradle.kts` files
+- `AndroidManifest.xml`
+- All Kotlin source files
+- Room database and DAO implementations
+- Repository classes
+- ViewModels
+- Navigation and Compose screens
+- Sovereign Kernel implementation
+- Constitutional Foundation implementation
+- Security and backup utilities
+- Existing tests
+- Architecture documentation
+- Implementation progress registers
+- Migration manifests
+- Existing defect and decision registers
+
+Pay particular attention to these files:
+
+**Kernel and constitution**
+
+- `ConstitutionalFoundation.kt`
+- `SovereignKernel.kt`
+
+**Database and persistence**
+
+- `ElyzarethDatabase.kt`
+- `ElyzarethDao.kt`
+- `OsBranchDao.kt`
+- `OsBranchModels.kt`
+- `CorpusRepository.kt`
+- `OsBranchRepository.kt`
+- `CorpusSeedData.kt`
+
+**Application and workflow**
+
+- `MainActivity.kt`
+- `ElyzarethRoutes.kt`
+- `ElyzarethViewModel.kt`
+- `CurationWorkflowPipeline.kt`
+
+**Shared services**
+
+- `SystemUtilitiesAndServices.kt`
+
+**Testing**
+
+- `CurationLifecycleVerificationTest.kt`
+- `SovereignKernelAndOsIntegrationTest.kt`
+- Existing unit, Robolectric and instrumentation tests.
+
+Also inspect the current documentation and reconcile its statements with source code.
+
+Do not accept a report's assertion as proof that the underlying implementation works.
+
+---
+
+# 4. COMPLETE ARCHITECTURAL GAP ANALYSIS
+
+For every requirement below, assign one status:
+
+- IMPLEMENTED AND VERIFIED
+- IMPLEMENTED BUT NOT VERIFIED
+- PARTIALLY IMPLEMENTED
+- PROTOTYPE ONLY
+- DOCUMENTED ONLY
+- NOT IMPLEMENTED
+- DEFECTIVE
+- DEFERRED BY DESIGN
+- REQUIRES ARCHITECTURAL DECISION
+
+Every status must be supported by actual file paths, relevant classes or methods, and test evidence where available.
+
+## A. Six-layer architecture
+
+Verify the six logical layers:
+
+1. Sovereign Kernel.
+2. Evidence and Provenance.
+3. Creative Production.
+4. Forensic Intelligence.
+5. Governance and Verification.
+6. Release and Distribution.
+
+The Human Creator remains the constitutional foundation and ultimate decision authority.
+
+For each layer, document:
+
+- Its responsibilities.
+- Its owning Gradle module.
+- Its source packages.
+- Its domain interfaces.
+- Its repositories.
+- Its database ownership.
+- Its communication with other layers.
+- Its permitted operations.
+- Its prohibited operations.
+- Its testing boundaries.
+- Its implementation status.
+
+Identify any layer that exists only as a screen, directory, placeholder or descriptive document.
+
+### Required architectural rule
+
+Higher layers may analyse lower-layer evidence but cannot rewrite the underlying historical evidence.
+
+UI components must not become independent governance authorities.
+
+---
+
+## B. Sovereign Kernel — highest priority
+
+The kernel must be the only authority capable of changing canonical workflow and governance state.
+
+Inspect the current implementation and define the complete target contract for:
+
+### B1. Identity and authority
+
+Define:
+
+- Human Creator identity.
+- Curator identity.
+- Auditor identity.
+- AI Generator identity.
+- AI Analyzer identity.
+- Production Adapter identity.
+- System service identity.
+- Permission scopes.
+- Authentication status.
+- Session validity.
+- Authorization checks.
+- Revocation and recovery.
+
+Clearly distinguish authentication, authorization, and creative authority.
+
+An administrator's technical access must not automatically grant creative approval or release authority.
+
+### B2. Governor Engine
+
+Specify:
+
+- Canonical project state.
+- Pipeline state.
+- Gate state.
+- Permitted transitions.
+- Transition prerequisites.
+- Rejection handling.
+- Veto handling.
+- Concurrent transition handling.
+- Duplicate command handling.
+- Invalid transition handling.
+- Recovery after interrupted transitions.
+
+No screen, ViewModel, repository, AI adapter or background service may directly modify canonical Governor state.
+
+All requests must pass through the kernel.
+
+### B3. Pipeline enforcement
+
+Define the complete 14-stage pipeline:
+
+1. Idea Inception.
+2. Creative Brief and Blueprint.
+3. Lyric Generator.
+4. Evidence Capture.
+5. Lyric Curator.
+6. Creative DNA Registry.
+7. Music Style Engineering.
+8. Visual Direction.
+9. Production Ingest.
+10. Asset Registration.
+11. Forensic Scanner.
+12. G1–G2 Governance.
+13. G3–G5 Governance.
+14. Master Player and Distribution.
+
+For every stage define:
+
+- Input artifact.
+- Output artifact.
+- Required evidence.
+- Entry conditions.
+- Validation rules.
+- Human decision requirements.
+- Failure states.
+- Re-entry rules.
+- Rejection behaviour.
+- Event records.
+- Next permitted stage.
+
+Explicitly define whether stages can be repeated and how parallel work is represented without violating canonical progression.
+
+A UI navigation event must never count as a completed workflow transition.
+
+### B4. Decision Authority
+
+Define a single authoritative decision service.
+
+It must support:
+
+- APPROVE.
+- REJECT.
+- VETO.
+- REQUEST_REVISION.
+- REQUEST_EVIDENCE.
+- DEFER.
+- REOPEN_FOR_REVIEW.
+
+Every consequential decision must record its actor, authority scope, decision time, target artifact, evidence reviewed, policy version and reason.
+
+An AI recommendation must never be represented as a human decision.
+
+### B5. Capability Registry
+
+Define module capabilities explicitly.
+
+For example:
+
+- Lyric Generator: create draft artifacts.
+- Lyric Curator: propose and endorse editorial revisions.
+- Forensic Scanner: produce analytical reports.
+- Asset Registry: register assets.
+- Governance Console: submit human decisions.
+- Master Player: inspect and play authorized releases.
+
+No module may obtain additional authority by changing its own configuration.
+
+### B6. Event Router and Recovery Manager
+
+Specify:
+
+- Event identity.
+- Event ordering.
+- Duplicate event detection.
+- Retry rules.
+- Failed event handling.
+- Transaction boundaries.
+- Interrupted workflow recovery.
+- Event replay.
+- Idempotency.
+- Recovery audit records.
+
+Define what happens when the application closes, crashes, loses power or is terminated while a governance operation is being committed.
+
+**Required deliverable:** Complete Sovereign Kernel Contract and transition/state-machine specification.
+
+---
+
+## C. G1–G5 constitutional governance
+
+Do not treat the five gates as ordinary status indicators.
+
+Each gate requires a complete evaluation contract.
+
+### G1 — Concept and Curated Lyrics
+
+Define required evidence:
+
+- Original creative idea.
+- Creative Blueprint.
+- Lyric revision history.
+- Curator endorsement.
+- Originality and emotional coherence assessment.
+- Explicit human approval.
+
+Define rejection and revision behaviour.
+
+### G2 — Evidence and Provenance
+
+Define required evidence:
+
+- Original source prompts.
+- Source files.
+- Generation records.
+- Model and tool identity where available.
+- Timestamps.
+- Revision relationships.
+- Asset hashes.
+- Event history.
+- Provenance continuity.
+
+Missing evidence must not be silently replaced with fabricated metadata.
+
+### G3 — Creative DNA Conformance
+
+Define:
+
+- Artist identity profile.
+- Language-specific policies.
+- Lyrical restrictions.
+- Retired imagery.
+- Structural rules.
+- Sonic identity.
+- Approved exceptions.
+- Policy version.
+- Human review requirements.
+
+Important: Creative DNA rules must be versioned, configurable and artist-specific.
+
+Do not hardcode arbitrary lyrical examples or individual creative preferences into universal constitutional laws.
+
+The existing lyric governance must be represented accurately, including its prohibited imagery and human editorial authority.
+
+A failed creative DNA check must produce a reasoned report, not silently rewrite the lyric.
+
+### G4 — Forensic Clearance
+
+Define required checks and their availability.
+
+A report must distinguish:
+
+- PASS.
+- WARNING.
+- FAIL.
+- INCONCLUSIVE.
+- NOT_TESTED.
+
+A missing or unavailable scanner cannot be represented as PASS.
+
+Similarity scores are not proof of plagiarism.
+
+AI-artifact detection is not proof of AI authorship.
+
+Define who verifies the report and who certifies G4.
+
+The forensic engine must not approve itself.
+
+### G5 — Final Release Authorization
+
+Define the complete sealing contract.
+
+Required prerequisites:
+
+- G1 approved.
+- G2 verified.
+- G3 approved.
+- G4 certified.
+- Complete release manifest.
+- Verified source and derived asset hashes.
+- Authenticated human release authority.
+- Valid human release signature.
+- Immutable release identity.
+- Atomic sealing operation.
+- Post-seal integrity verification.
+
+A failed prerequisite must block sealing.
+
+A UI status, Boolean field, database seed, timestamp or generated hash must not constitute human authorization.
+
+A correction to a sealed release must create a new release version with traceable parentage.
+
+### Gate lifecycle
+
+Define:
+
+NOT EVALUATED → EVALUATION IN PROGRESS → HUMAN REVIEW REQUIRED → APPROVED
+
+Alternative outcomes:
+
+REJECTED / VETOED / REVISION REQUIRED / DEFERRED.
+
+No automated process may convert rejection or veto into approval.
+
+**Required deliverable:** G1–G5 gate contracts, state transitions, evidence matrices and test specifications.
+
+---
+
+## D. Evidence and Provenance Architecture
+
+This is a permanent architectural subsystem, not an ordinary activity log.
+
+Define a persistent, append-only evidence ledger.
+
+Every consequential event must record:
+
+- Event ID.
+- Project ID.
+- Artifact ID.
+- Actor ID.
+- Actor type.
+- Event type.
+- Timestamp.
+- Parent event.
+- Payload version.
+- Canonical payload hash.
+- Previous event hash.
+- Current event hash.
+- Signature reference where required.
+- Source and derived asset relationships.
+
+### Required evidence classes
+
+1. Original evidence.
+2. Derived evidence.
+3. Analytical evidence.
+4. Authority evidence.
+
+### Required integrity mechanisms
+
+Specify:
+
+- Canonical serialization.
+- SHA-256 or approved stronger hashing strategy.
+- Hash-chain construction.
+- Chain verification.
+- Signed checkpoints.
+- Human signature verification.
+- Tamper detection.
+- Historical record interpretation.
+- Append-only correction records.
+- Integrity failure handling.
+
+A SHA-256 value stored in a normal database row does not make the row immutable.
+
+Define how the system prevents normal repositories and UI screens from updating or deleting historical evidence.
+
+Also define the threat model and the limits of local-device tamper resistance.
+
+**Required deliverable:** Evidence Ledger Architecture and Data Integrity Contract.
+
+---
+
+## E. Database and Permanent Data Architecture
+
+This section is a P0 requirement.
+
+Inspect the existing Room database and all migrations.
+
+The current documentation identifies:
+
+- Room database version 2.
+- Existing v1-to-v2 schema expansion.
+- `fallbackToDestructiveMigration()`.
+- Existing corpus and OS branch records.
+
+These must be investigated against actual source and schema evidence.
+
+### E1. Migration safety
+
+Define:
+
+- Current production schema.
+- Historical schema versions.
+- Explicit migration paths.
+- Schema export.
+- Table preservation.
+- Index preservation.
+- Foreign-key preservation.
+- Default-value preservation.
+- Data validation.
+- Rollback or recovery strategy.
+
+No production database migration may silently discard the corpus, human curation, gate decisions, evidence or release history.
+
+Do not use destructive migration as a normal upgrade strategy.
+
+### E2. Corpus preservation
+
+Inspect:
+
+- Base title identity.
+- Artifact identity.
+- Stable IDs.
+- Duplicate detection.
+- Historical versions.
+- Human curation.
+- Archive states.
+- Provenance.
+- SAF imports.
+- Repeated imports.
+- Interrupted imports.
+- Empty imports.
+- Reordered imports.
+- Removed source files.
+- Modified source files.
+
+The existing App 02 Corpus Curator is a protected historical capability.
+
+Do not replace its existing workflow with a simplified OS branch implementation.
+
+### E3. Transactional operations
+
+Specify transaction boundaries for:
+
+- Project creation.
+- Artifact revision.
+- Evidence recording.
+- Gate evaluation.
+- Human decision.
+- Asset registration.
+- SAF rescan.
+- Release preparation.
+- Release sealing.
+- Backup and restore.
+
+Define the expected behaviour when any operation fails halfway through.
+
+### E4. Database versioning
+
+Every domain entity must have:
+
+- Stable identity.
+- Schema version.
+- Creation time.
+- Modification/revision relationship.
+- Provenance reference.
+- Archive/deletion policy.
+
+Historical records must remain interpretable after future schema upgrades.
+
+**Required deliverable:** Database Preservation and Migration Architecture with a complete test matrix.
+
+---
+
+## F. Asset Registry and Media Lifecycle
+
+The current blueprint identifies asset registration but does not fully specify the lifecycle.
+
+Define a unified asset model for:
+
+- Original lyrics.
+- Revised lyrics.
+- Prompts.
+- Audio masters.
+- Alternate takes.
+- Stems.
+- Instrumentals.
+- Artwork.
+- Video.
+- Production metadata.
+- Forensic reports.
+- Release packages.
+
+For every asset define:
+
+- Asset ID.
+- Project ID.
+- Asset type.
+- Source or derived classification.
+- Parent asset.
+- Version.
+- File identity.
+- MIME type.
+- File size.
+- Duration where applicable.
+- Checksum.
+- Storage location.
+- Creation source.
+- Import source.
+- Transformation history.
+- Integrity status.
+- Archive status.
+
+Define how renamed, moved, missing, duplicated or modified files are handled.
+
+Define the difference between a database record and the actual file bytes.
+
+A registered asset must not be considered intact merely because its database row exists.
+
+### Required asset operations
+
+- Import.
+- Register.
+- Verify.
+- Derive.
+- Revise.
+- Compare.
+- Archive.
+- Restore.
+- Export.
+- Release.
+
+No operation should silently overwrite an original source asset.
+
+**Required deliverable:** Asset Registry and Media Lifecycle Contract.
+
+---
+
+## G. Creative Production Modules
+
+Reconcile all creative modules against the 14-stage pipeline.
+
+Specify the minimum functional and domain contracts for:
+
+1. Idea and Blueprint Studio.
+2. Lyric Generator.
+3. Lyric Curator.
+4. Creative DNA Engine.
+5. Music Production Console.
+6. Visual Direction Studio.
+
+For every module define:
+
+- Purpose.
+- Inputs.
+- Outputs.
+- Data ownership.
+- Repository interface.
+- ViewModel responsibilities.
+- Kernel interaction.
+- Evidence events.
+- Human decision points.
+- Error handling.
+- Offline operation.
+- Acceptance tests.
+
+### Preservation requirements
+
+Preserve the existing Lyric Generator and App 02 Corpus Curator capabilities.
+
+Do not replace them with mock screens or generic sample workflows.
+
+Preserve historical revisions and human curation.
+
+The Lyric Generator may create proposals, but cannot approve or publish its own output.
+
+The Curator must retain explicit human editorial control.
+
+Creative DNA must assess and report. It must not silently rewrite historical or approved lyrics.
+
+### External production integrations
+
+Define optional adapters for Suno and other production tools.
+
+Record the source, prompt, model/tool identity where available, generated asset, import time and provenance.
+
+The core application must remain functional if an external provider is unavailable.
+
+**Required deliverable:** Creative Module Contracts and Functional Acceptance Matrix.
+
+---
+
+## H. Forensic Intelligence Engine
+
+The current existence of forensic screens and report entities does not establish a functioning forensic engine.
+
+Define independent analysis services for:
+
+1. Lyric Similarity.
+2. Audio Similarity.
+3. Watermark Detection.
+4. Audio Integrity.
+5. Vocal Analysis.
+6. Production Integrity.
+7. Provenance Verification.
+8. Catalog Collision Detection.
+
+For each service define:
+
+- Required input.
+- Processing method.
+- Algorithm or model.
+- Dependencies.
+- Output.
+- Confidence or limitations.
+- Reproducibility.
+- Failure states.
+- Test fixtures.
+- Human interpretation requirements.
+
+### Special requirement: Catalog Collision Detection
+
+Avoid simplistic substring-based duplicate classification.
+
+Define a robust multi-factor comparison contract that can use:
+
+- Stable IDs.
+- Exact file hashes.
+- Normalized title comparisons.
+- Text similarity.
+- Audio fingerprints where available.
+- Duration comparison.
+- Metadata comparison.
+- Human review.
+
+A possible duplicate must not automatically trigger deletion or replacement.
+
+### Forensic evidence quality
+
+Clearly separate:
+
+- Measured facts.
+- Algorithmic estimates.
+- Inferences.
+- Human conclusions.
+
+Do not seed production dashboards with fictional PASS reports or invented forensic results.
+
+Sample data must be visibly identified as TEST FIXTURE or DEMONSTRATION DATA.
+
+**Required deliverable:** Forensic Engine Technical Specification and Test Matrix.
+
+---
+
+## I. Security, Authentication and Cryptographic Authority
+
+The existing security helper must be examined at implementation level.
+
+Specify:
+
+- Android Keystore usage.
+- Key generation.
+- Key storage.
+- Key rotation.
+- Authentication.
+- Authorization.
+- Signature generation.
+- Signature verification.
+- Session expiry.
+- Device change.
+- Key loss.
+- Recovery.
+- Revocation.
+- Backup limitations.
+
+Define how a human approval is cryptographically linked to:
+
+- The approving identity.
+- The target project.
+- The artifact version.
+- The gate.
+- The evidence reviewed.
+- The policy version.
+- The approval timestamp.
+
+A hash of a principal string and payload is not a digital signature.
+
+A Boolean `humanSignOff` is not authenticated authority.
+
+Define the consequences of device compromise and signing-key loss.
+
+Do not claim absolute security or tamper-proof storage on a device controlled by its owner.
+
+**Required deliverable:** Security and Human Authority Specification.
+
+---
+
+## J. Backup, Recovery and Disaster Handling
+
+Define a real backup and recovery system.
+
+Include:
+
+- Database backup.
+- Media-file backup.
+- Evidence-ledger backup.
+- Manifest generation.
+- Backup integrity checks.
+- Encryption.
+- Key management.
+- Backup versioning.
+- Restore validation.
+- Interrupted backup handling.
+- Interrupted restore handling.
+- Duplicate recovery prevention.
+- Recovery event logging.
+
+Define how the system proves that a restored database and its media files correspond to the same historical project state.
+
+Recovery must never fabricate:
+
+- Human approvals.
+- Gate signatures.
+- Release authorization.
+- Missing source evidence.
+
+Specify backup and restore acceptance tests.
+
+**Required deliverable:** Backup, Recovery and Disaster-Recovery Contract.
+
+---
+
+## K. AI and External Adapter Isolation
+
+AI providers must remain optional and non-authoritative.
+
+Define a standard adapter contract for:
+
+- AI lyric generation.
+- AI analysis.
+- Audio processing.
+- External music generation.
+- Cloud storage.
+- Other external integrations.
+
+Every adapter must have:
+
+- Capability declaration.
+- Permission scope.
+- Input/output schema.
+- Provenance capture.
+- Error handling.
+- Timeout handling.
+- Retry policy.
+- Provider-unavailable behaviour.
+- Data privacy rules.
+
+AI adapters must not:
+
+- Change canonical pipeline state.
+- Approve governance gates.
+- Generate human signatures.
+- Modify historical evidence.
+- Release masters.
+- Override vetoes.
+
+If the AI provider is offline, the user must still be able to inspect, curate, preserve, evaluate and play already-authorized local assets.
+
+**Required deliverable:** AI Adapter and External Integration Security Contract.
+
+---
+
+## L. User Interface and Navigation Architecture
+
+Inspect the existing 14 destinations.
+
+For every screen define:
+
+- Purpose.
+- Owning module.
+- Required data.
+- Read/write capability.
+- Kernel interactions.
+- Human decision actions.
+- Evidence visibility.
+- Error states.
+- Empty states.
+- Loading states.
+- Offline states.
+- Accessibility requirements.
+
+Enforce one authoritative project context across all modules.
+
+The UI must display:
+
+- Current project.
+- Current pipeline stage.
+- Current gate status.
+- Responsible actor.
+- Evidence status.
+- Artifact version.
+- Provenance.
+- Pending human decisions.
+- Release lock status.
+
+A screen must not display a green approval indicator merely because a local ViewModel variable changed.
+
+Historical records must have read-only inspection behaviour.
+
+Clearly distinguish:
+
+- Playback.
+- Editing.
+- Evidence inspection.
+- Governance approval.
+- Release authorization.
+
+Do not redesign screens or introduce new interaction patterns without approval.
+
+**Required deliverable:** Screen-to-Architecture Traceability Matrix and UI Acceptance Specification.
+
+---
+
+## M. Modularization and Dependency Architecture
+
+Inspect the existing Gradle topology:
+
+- `:app`
+- `:core:foundation`
+- `:core:kernel`
+- `:core:shared`
+
+Determine whether the current module boundaries actually enforce the intended architecture.
+
+Specify the target dependency direction.
+
+Required principles:
+
+1. Foundation has no dependency on application modules.
+2. Kernel depends on foundation contracts.
+3. Creative modules cannot directly mutate kernel state.
+4. Forensic modules cannot approve themselves.
+5. Shared utilities cannot become hidden governance authorities.
+6. UI modules communicate through domain interfaces.
+7. External providers remain behind adapters.
+8. No circular dependencies.
+9. No duplicated canonical state machines.
+10. No competing persistence authorities.
+
+Determine whether the current application module should be split into feature modules.
+
+Recommend modularization only where it materially improves independent testing, security boundaries, ownership or maintainability.
+
+Do not create modules merely to increase the module count.
+
+**Required deliverable:** Final Gradle Module Map, Dependency Rules and Module Migration Plan.
+
+---
+
+## N. Testing and Verification Architecture
+
+The current build and test documentation must be independently reconciled with actual evidence.
+
+Define separate test categories:
+
+### N1. Unit tests
+
+- State-machine transitions.
+- Gate evaluation.
+- Policy evaluation.
+- Repository behaviour.
+- Evidence hashing.
+- Signature verification.
+- Asset identity.
+- Duplicate detection.
+- Recovery logic.
+
+### N2. Database tests
+
+- v1-to-v2 migration.
+- Future migration paths.
+- Historical corpus preservation.
+- Foreign keys.
+- Transactions.
+- Rollback.
+- Interrupted import.
+- Repeated SAF scans.
+- Empty scan.
+- Modified files.
+- Removed files.
+- Reordered files.
+- Database recovery.
+
+### N3. Integration tests
+
+- Creative module to kernel.
+- Kernel to evidence ledger.
+- Gate evaluation to human approval.
+- Forensic report to G4.
+- G5 to release manifest.
+- Release package to Master Player.
+
+### N4. Security tests
+
+- Unauthorized gate transition.
+- Forged approval.
+- Invalid signature.
+- Replayed approval.
+- AI-generated approval.
+- Veto override.
+- Modified sealed asset.
+- Invalid actor permission.
+- Signing-key loss.
+
+### N5. UI tests
+
+- Navigation.
+- Project context.
+- Gate display.
+- Approval workflow.
+- Rejection workflow.
+- Read-only historical records.
+- Offline behaviour.
+
+### N6. Instrumentation and physical-device tests
+
+Define the minimum device verification required for:
+
+- Database persistence.
+- App restart.
+- Process death.
+- Storage access.
+- Audio import.
+- Large files.
+- Backup and restore.
+- Keystore operations.
+- Playback authorization.
+
+### Evidence classification
+
+Every test result must state:
+
+- Test name.
+- Test type.
+- Environment.
+- Device or emulator where applicable.
+- Build variant.
+- Execution date.
+- Result.
+- Failure details.
+- Evidence location.
+
+Distinguish:
+
+- Compiled.
+- Unit tested.
+- Robolectric tested.
+- Instrumentation tested.
+- Emulator verified.
+- Physical-device verified.
+
+A successful compilation is not proof of functional correctness.
+
+A JVM test is not proof of Android runtime behaviour.
+
+**Required deliverable:** Master Verification and Acceptance Test Plan.
+
+---
+
+## O. Build, Release and Operational Readiness
+
+Define the complete build and release process.
+
+Include:
+
+- Reproducible Gradle builds.
+- Dependency version control.
+- Build variant.
+- Version code and name.
+- Signing configuration.
+- APK/AAB generation.
+- Artifact checksums.
+- Release manifest.
+- Test evidence.
+- Release notes.
+- Rollback strategy.
+- Source revision identity.
+
+Do not enable production G5 or Master Player release authorization before the security, evidence, gate and asset requirements are satisfied.
+
+**Required deliverable:** Build and Release Engineering Specification.
+
+---
+
+## P. Data Governance and Historical Archive Preservation
+
+Inspect all historical TSX mappings, exported OS versions, corpus records, old governance engines and experimental branches.
+
+Create a migration/recovery classification:
+
+- PRESERVE AS ACTIVE.
+- REINTEGRATE.
+- MIGRATE.
+- ARCHIVE.
+- RETIRE.
+- REQUIRES HUMAN DECISION.
+
+For every item document:
+
+- Source.
+- Current status.
+- Functional value.
+- Data dependencies.
+- Migration risks.
+- Destination module.
+- Historical traceability.
+
+Do not delete historical source material simply because a new implementation exists.
+
+Do not merge incompatible state models or gate definitions without an explicit decision.
+
+The target remains:
+
+**One kernel. One canonical project state. One evidence authority. One gate authority. One release vault.**
+
+**Required deliverable:** Historical Architecture and Data Preservation Register.
+
+---
+
+# 5. REQUIRED CROSS-CUTTING ENGINEERING CONTRACTS
+
+The following contracts must be added to the implementation plan if they are not already sufficiently specified.
+
+For each contract, provide a purpose, ownership, inputs, outputs, invariants, failure handling, security implications and acceptance tests.
+
+1. Canonical Project Identity Contract.
+2. Canonical State Transition Contract.
+3. Pipeline Stage Contract.
+4. G1–G5 Gate Evidence Contract.
+5. Human Approval and Signature Contract.
+6. Evidence Append-Only Contract.
+7. Asset Identity and Lifecycle Contract.
+8. Database Migration and Preservation Contract.
+9. SAF Import and Rescan Contract.
+10. Corpus Version and Duplicate Detection Contract.
+11. Forensic Report Contract.
+12. AI Adapter Isolation Contract.
+13. Transaction and Idempotency Contract.
+14. Backup and Restore Contract.
+15. Release Manifest and Sealing Contract.
+16. Master Player Authorization Contract.
+17. Error and Recovery Contract.
+18. Offline-First Behaviour Contract.
+19. Audit and Observability Contract.
+20. Schema and Policy Versioning Contract.
+
+These are system-wide interfaces. They must be agreed before independent modules are implemented.
+
+---
+
+# 6. EXISTING DEFECTS THAT MUST BE EXPLICITLY TRACKED
+
+Do not bury known defects inside general future work.
+
+Investigate and document the following as individual findings.
+
+### DEFECT P0-01 — Destructive database migration
+
+Inspect `ElyzarethDatabase.kt`.
+
+Resolve the conflict between the documented migration strategy and the Master Blueprint's permanent data-preservation requirements.
+
+Specify a non-destructive migration plan and test existing user data through every supported upgrade path.
+
+### DEFECT P0-02 — Corpus SAF rescan preservation
+
+Inspect the actual rescan implementation in `CorpusRepository.kt`.
+
+Determine exactly when records are cleared, replaced, retained or duplicated.
+
+Document the consequences for:
+
+- Curated records.
+- Historical versions.
+- Stable IDs.
+- Provenance.
+- Removed files.
+- Interrupted scans.
+- Empty imports.
+
+Define a transactional, recoverable import strategy.
+
+### DEFECT P0-03 — Direct kernel state transition
+
+Inspect `SovereignKernel.transitionPipelineStage()`.
+
+Determine whether the implementation enforces valid sequential progression, prerequisites, authority and evidence requirements.
+
+The corrected target must reject unauthorized or invalid transitions.
+
+### DEFECT P0-04 — Non-persistent event ledger
+
+Inspect the kernel event ledger.
+
+Determine whether it is durable, append-only and transactionally linked to canonical state changes.
+
+A limited in-memory event stream cannot be the permanent evidence authority.
+
+### DEFECT P0-05 — Gate authorization weakness
+
+Inspect `evaluateGateTransition()` and all related callers.
+
+Determine whether a status string, Boolean or UI operation can create an approval.
+
+Define authenticated human approval and cryptographic verification requirements.
+
+### DEFECT P0-06 — Premature release sealing
+
+Inspect `OsBranchRepository.sealMasterRelease()` and all callers.
+
+Determine whether the method can seal a release without verified G1–G4 evidence, a complete manifest and an authenticated human signature.
+
+Inspect any pre-seeded sealed release records.
+
+Define a safe treatment for demonstration data and prevent test fixtures from appearing as genuine releases.
+
+### DEFECT P1-07 — Cryptographic signing
+
+Inspect `SystemUtilitiesAndServices.kt`.
+
+Determine whether the current implementation performs real Keystore-backed signing or merely computes a hash.
+
+Specify the correct signature and verification architecture.
+
+### DEFECT P1-08 — Constitutional and Creative DNA policy drift
+
+Inspect `ConstitutionalFoundation.kt` and all hardcoded lyric restrictions.
+
+Separate universal constitutional rules from versioned creative DNA policies.
+
+Correct the planning documents so the established Elyzareth lyric governance is not contradicted.
+
+### DEFECT P1-09 — Forensic result provenance
+
+Inspect seeded forensic reports and demonstration records.
+
+Determine whether any production UI presents synthetic data as completed analysis.
+
+Define strict provenance and TEST FIXTURE labelling.
+
+### DEFECT P1-10 — Incomplete feature-module boundaries
+
+Inspect whether screens, repositories and services are actually independently testable.
+
+Document what should remain in `:app` and what should move into feature modules.
+
+Do not perform the move in this assignment.
+
+---
+
+# 7. REQUIRED DOCUMENTATION DELIVERABLES
+
+Create or update the following documents under:
+
+`documentation/architecture/`
+
+1. `MASTER_ARCHITECTURAL_GAP_ANALYSIS_1_0.md`
+   - Complete blueprint-to-repository comparison.
+   - Every missing, partial, defective and unverified requirement.
+   - File-level evidence.
+2. `COMPLETE_TARGET_ARCHITECTURE_1_0.md`
+   - Six-layer architecture.
+   - Module responsibilities.
+   - Dependency boundaries.
+   - Kernel authority.
+   - Data and evidence architecture.
+3. `SYSTEM_CONTRACT_REGISTER_1_0.md`
+   - All 20 cross-cutting engineering contracts.
+   - Contract ownership.
+   - Inputs, outputs, invariants and acceptance criteria.
+4. `G1_G5_GOVERNANCE_SPECIFICATION_1_0.md`
+   - Complete gate state machines.
+   - Required evidence.
+   - Human authority.
+   - Rejection, veto and re-entry.
+   - G5 release authorization.
+5. `EVIDENCE_AND_ASSET_ARCHITECTURE_1_0.md`
+   - Evidence ledger.
+   - Provenance.
+   - Hash chain.
+   - Asset lifecycle.
+   - Release manifest.
+6. `DATABASE_AND_CORPUS_PRESERVATION_PLAN_1_0.md`
+   - Migration strategy.
+   - Corpus preservation.
+   - SAF import.
+   - Transaction and recovery strategy.
+   - Data validation.
+7. `SECURITY_AND_RECOVERY_SPECIFICATION_1_0.md`
+   - Identity.
+   - Authority.
+   - Keystore.
+   - Digital signatures.
+   - Backup.
+   - Recovery.
+8. `FORENSIC_ENGINE_SPECIFICATION_1_0.md`
+   - Analysis services.
+   - Result classification.
+   - Limitations.
+   - Provenance.
+   - Test plan.
+9. `FEATURE_MODULE_AND_UI_TRACEABILITY_1_0.md`
+   - All 14 pipeline stages.
+   - All functional screens.
+   - Domain ownership.
+   - Navigation.
+   - Read/write authority.
+   - Module boundaries.
+10. `MASTER_ACCEPTANCE_TEST_MATRIX_1_0.md`
+    - Unit.
+    - Database.
+    - Integration.
+    - Security.
+    - UI.
+    - Instrumentation.
+    - Physical-device verification.
+11. `PRIORITIZED_IMPLEMENTATION_ROADMAP_1_0.md`
+    - P0 through P4.
+    - Dependencies.
+    - Deliverables.
+    - Acceptance criteria.
+    - Decision requirements.
+12. `ARCHITECTURAL_DECISION_AND_DEVIATION_REGISTER_1_0.md`
+    - Existing conflicts.
+    - Unresolved decisions.
+    - Recommended resolutions.
+    - Student-Director approval status.
+
+Update the existing `MASTER_PROGRESS_REGISTER.md` only to reflect verified findings and the new planning deliverables.
+
+Do not delete or overwrite historical reports. Preserve revision history.
+
+---
+
+# 8. IMPLEMENTATION ROADMAP FORMAT
+
+The roadmap must be dependency-driven, not merely a list of screens.
+
+Use these phases:
+
+### PHASE 0 — Baseline and Evidence Freeze
+
+- Identify exact source revision.
+- Record repository inventory.
+- Verify actual Gradle configuration.
+- Reconcile build/test evidence.
+- Establish current database schema.
+- Preserve current corpus.
+- Identify current production and test fixtures.
+
+Deliverable: `BASELINE_EVIDENCE_FREEZE`.
+
+### PHASE 1 — P0 Data Preservation and Kernel Safety
+
+- Non-destructive database migration.
+- Corpus preservation.
+- SAF import/rescan safety.
+- Canonical state-transition enforcement.
+- Gate authorization controls.
+- G5 release lock.
+- Persistent event ledger design.
+
+Deliverable: `KERNEL_AND_DATA_SAFETY_BASELINE`.
+
+### PHASE 2 — Evidence, Identity and Security
+
+- Persistent evidence ledger.
+- Hash-chain verification.
+- Human authentication.
+- Keystore-backed signatures.
+- Transactional decisions.
+- Recovery architecture.
+
+Deliverable: `SOVEREIGN_KERNEL_1_0`.
+
+### PHASE 3 — Creative Production and Asset Lifecycle
+
+- Creative module contracts.
+- Creative DNA governance.
+- Asset Registry.
+- Production ingest.
+- Source/derived asset traceability.
+- Offline-first integration.
+
+Deliverable: `CREATIVE_PRODUCTION_2_0`.
+
+### PHASE 4 — Forensic Intelligence
+
+- Independent scanner services.
+- Similarity and collision analysis.
+- Audio integrity.
+- Provenance verification.
+- Forensic result classification.
+- Human G4 certification.
+
+Deliverable: `FORENSIC_INTELLIGENCE_3_0`.
+
+### PHASE 5 — Complete Governance and Release
+
+- G1–G4 complete enforcement.
+- G5 human authorization.
+- Release manifest.
+- Atomic cryptographic sealing.
+- Master Player authorization.
+- Distribution controls.
+
+Deliverable: `GOVERNANCE_AND_RELEASE_1_0`.
+
+### PHASE 6 — Final Verification and Production Acceptance
+
+- Full regression.
+- Database upgrade verification.
+- Security testing.
+- Recovery testing.
+- Offline operation.
+- Emulator and physical-device testing.
+- Reproducible release build.
+
+Deliverable: `ELYZARETH_OS_FINAL_1_0_CANDIDATE`.
+
+Do not assign completion dates or claim delivery readiness without evidence.
+
+---
+
+# 9. PRIORITY AND DEPENDENCY RULES
+
+Every roadmap item must include:
+
+- Unique ID.
+- Priority.
+- Blueprint reference.
+- Current repository status.
+- Affected files.
+- Required correction.
+- Dependencies.
+- Risk.
+- Acceptance criteria.
+- Required tests.
+- Evidence needed.
+- Human decision requirement.
+- Implementation authorization status.
+
+Priority definitions:
+
+**P0 — Constitutional or data-integrity blocker**
+
+Can cause loss of historical data, unauthorized decisions, invalid governance or unauthorized release.
+
+**P1 — Core architecture blocker**
+
+Prevents the kernel, evidence, security or recovery architecture from functioning reliably.
+
+**P2 — Functional subsystem gap**
+
+Prevents a complete creative, asset or forensic workflow.
+
+**P3 — Modularization and operational maturity**
+
+Improves independent testing, maintainability and operational readiness.
+
+**P4 — UX refinement and future enhancements**
+
+Non-essential improvements that must not distract from constitutional correctness.
+
+A dependent task cannot be marked ready merely because its UI exists.
+
+---
+
+# 10. REQUIRED ACCEPTANCE CRITERIA FOR THE COMPLETED PLAN
+
+The architectural reconciliation is accepted only when:
+
+1. Every Master Blueprint requirement has a traceable repository status.
+2. Every status is supported by source evidence or explicitly marked unverified.
+3. All known critical defects have individual IDs.
+4. All missing engineering contracts are specified.
+5. Every pipeline stage has defined inputs, outputs and transition rules.
+6. G1–G5 have complete evidence and authority requirements.
+7. Database and corpus preservation have explicit migration and recovery plans.
+8. Evidence integrity has a complete persistence and verification design.
+9. Asset lifecycle and release manifest are fully specified.
+10. Security and human signatures have a technically credible design.
+11. Forensic capabilities distinguish actual analysis from estimates and unavailable tests.
+12. AI adapters cannot obtain governance authority.
+13. All 14 pipeline stages and all functional modules have traceability.
+14. The complete test matrix covers the constitutional invariants.
+15. The implementation roadmap has dependency ordering and measurable acceptance criteria.
+16. Contradictions between the Master Blueprint, existing architecture documents and source code are recorded.
+17. All decisions requiring Student-Director approval are clearly identified.
+18. No code, schema, dependency or application behaviour was changed during this assignment.
+
+---
+
+# 11. STRICT EXECUTION RESTRICTIONS
+
+During this assignment:
+
+- DO NOT implement code.
+- DO NOT modify Room entities or DAOs.
+- DO NOT change database version.
+- DO NOT introduce migrations.
+- DO NOT modify Gradle dependencies.
+- DO NOT reorganize packages.
+- DO NOT create new feature modules.
+- DO NOT modify application navigation.
+- DO NOT change existing UI.
+- DO NOT remove seed records.
+- DO NOT modify corpus records.
+- DO NOT change G1–G5 behaviour.
+- DO NOT activate G5.
+- DO NOT unlock Master Player.
+- DO NOT delete historical TSX or OS source material.
+- DO NOT rewrite the Master Blueprint.
+- DO NOT claim tests passed unless actually executed and evidenced.
+- DO NOT classify a prototype as complete because its screen exists.
+- DO NOT classify a seeded record as real production evidence.
+- DO NOT mark a requirement verified from documentation alone.
+
+Documentation reconciliation is the only permitted repository modification.
+
+If a finding cannot be established, mark it UNVERIFIED and specify the additional evidence required.
+
+---
+
+# 12. FINAL REPORT TO STUDENT-DIRECTOR
+
+At completion, provide a concise executive report containing:
+
+1. Total requirements inspected.
+2. Implemented and verified.
+3. Implemented but unverified.
+4. Partially implemented.
+5. Prototype only.
+6. Not implemented.
+7. Defective.
+8. Deferred by design.
+9. Architectural decisions pending.
+10. P0 blockers.
+11. P1 blockers.
+12. Newly identified missing contracts.
+13. Documents created or updated.
+14. Source files inspected.
+15. Tests actually executed, if any.
+16. Confirmation that no application code or database was changed.
+17. Recommended next engineering assignment.
+
+For every count, explain the classification method and avoid double-counting requirements.
+
+Conclude with one of these statuses:
+
+- ARCHITECTURAL PLAN COMPLETE — AWAITING STUDENT-DIRECTOR APPROVAL.
+- ARCHITECTURAL PLAN INCOMPLETE — SPECIFIC GAPS REMAIN.
+- BLOCKED — ADDITIONAL SOURCE OR DECISION REQUIRED.
+
+Do not declare the OS implementation complete.
+
+---
+
+## FINAL DIRECTIVE
+
+The objective is not to make the existing repository appear complete.
+
+The objective is to produce a technically honest, comprehensive, dependency-aware plan that will eventually make the repository conform to the Elyzareth OS Final Master Blueprint.
+
+Preserve working functionality.
+
+Preserve historical evidence.
+
+Preserve the corpus.
+
+Preserve human authority.
+
+Do not build around known defects.
+
+Do not conceal architectural gaps behind dashboards, status indicators or documentation claims.
+
+**One Sovereign Kernel. One Canonical State. One Evidence Authority. One Governance System. One Release Authority.**
+
+First establish the complete plan. Obtain Student-Director approval. Only then begin controlled implementation.
+
+## **My instructions for the next review**
+
+When Argon returns its documents, I will independently check three things before recommending implementation:
+
+1. **Completeness:** Does every requirement in the Master Blueprint have a traceable implementation or planned correction?
+2. **Technical correctness:** Are the proposed solutions actually safe—especially database migration, event persistence, human signing and release sealing?
+3. **Scope discipline:** Has Argon preserved the existing working Corpus Curator, Lyric Generator and historical records instead of replacing them with simplified alternatives?
+
+One important boundary: this assignment is for **plan completion only**. It does not authorize Argon to modify the application. That keeps the architecture decision separate from implementation approval.

@@ -1,0 +1,302 @@
+# ELYZARETH OS — FROZEN STRUCTURAL MANIFEST (.yaml)
+# Reference: ELYZARETH_OS_STRUCTURE_1.0
+# Phase: STRUCTURAL FREEZE
+# Authority: Student-Director / Human Creator
+
+project:
+  name: "ELYZARETH OS"
+  version: "1.0-structure-freeze"
+  reference: "ELYZARETH_OS_STRUCTURE_1.0"
+  phase: "STRUCTURAL_FREEZE"
+  authority: "Student-Director / Human Creator"
+  latest_build_output: "app/build/outputs/apk/debug/app-debug.apk"
+  github_workflows:
+    yml: ".github/workflows/main.yml"
+    yaml: ".github/workflows/elyzareth-structure-freeze.yaml"
+
+settled_architectural_decisions:
+  - id: "ARCH-DEC-01"
+    topic: "Duplicate Creative Factory paths"
+    canonical_path: "creative/creative-factory/"
+    retired_duplicate: "creative-factory/"
+    status: "RECONCILED_EOS_STRUCT_UI_003"
+  - id: "ARCH-DEC-02"
+    topic: "Relationship between top-level foundation/, kernel/, shared/ and :core Gradle modules"
+    authoritative_gradle_modules:
+      - ":core:foundation (core/foundation/)"
+      - ":core:kernel (core/kernel/)"
+      - ":core:shared (core/shared/)"
+    conceptual_index_roots:
+      - "foundation/ (OWNERSHIP_INDEX.md)"
+      - "kernel/ (OWNERSHIP_INDEX.md)"
+      - "shared/ (OWNERSHIP_INDEX.md)"
+    status: "RECONCILED_EOS_STRUCT_UI_003"
+
+preserved_working_modules:
+  gradle_modules:
+    - ":app"
+    - ":core:foundation"
+    - ":core:kernel"
+    - ":core:shared"
+  legacy_archives:
+    - "elyzareth-app02-curator/"
+
+branches:
+  foundation:
+    status: "CONCEPTUAL_INDEX_ONLY"
+    authoritative_module: ":core:foundation"
+    sub_branches:
+      - "human-authority"
+      - "constitution"
+      - "system-identity"
+  kernel:
+    status: "CONCEPTUAL_INDEX_ONLY"
+    authoritative_module: ":core:kernel"
+    sub_branches:
+      - "identity"
+      - "authority"
+      - "governor"
+      - "decision-engine"
+      - "event-router"
+      - "state-manager"
+      - "policy-engine"
+      - "capability-registry"
+      - "integrity-engine"
+      - "recovery-manager"
+      - "transaction-manager"
+      - "kernel-api"
+  command-center:
+    status: "STRUCTURE_CREATED"
+    authoritative_ui_owner: "app/src/main/java/com/example/ui/commandcentre/CommandCentreScreen.kt"
+    sub_branches:
+      - "dashboard"
+      - "project-manager"
+      - "active-projects"
+      - "archived-projects"
+      - "pipeline"
+      - "governance-overview"
+      - "evidence-overview"
+      - "forensic-overview"
+      - "release-overview"
+      - "system-health"
+      - "notifications"
+  creative:
+    status: "STRUCTURE_CREATED"
+    authoritative_ui_owners:
+      - "app/src/main/java/com/example/ui/creative/CreativeBranchScreens.kt"
+      - "app/src/main/java/com/example/ui/generator/LyricGeneratorScreen.kt"
+    sub_branches:
+      - "idea-studio"
+      - "blueprint-studio"
+      - "lyric-generator"
+      - "lyric-curator"
+      - "creative-dna"
+      - "creative-factory"
+    creative_factory_sub_branches:
+      - "idea-processing"
+      - "dna-matching"
+      - "imagery-control"
+      - "emotional-logic"
+      - "structural-validation"
+      - "language-validation"
+      - "quality-assessment"
+      - "correction-suggestions"
+      - "factory-orchestrator"
+  corpus:
+    status: "STRUCTURE_CREATED"
+    sub_branches:
+      - "song-catalog"
+      - "base-title-registry"
+      - "version-registry"
+      - "clip-registry"
+      - "libraries"
+      - "historical-archive"
+      - "witness-vault"
+      - "duplicate-detection"
+      - "similarity-index"
+      - "search"
+      - "metadata"
+      - "statistics"
+      - "ingestion"
+      - "export"
+      - "corpus-curator"
+  production:
+    status: "STRUCTURE_CREATED"
+    sub_branches:
+      - "style-engineering"
+      - "suno-workflow"
+      - "external-music-workflow"
+      - "bpm-key"
+      - "instruments"
+      - "arrangement"
+      - "vocal-direction"
+      - "production-notes"
+      - "audio-ingest"
+      - "stems"
+      - "alternates"
+      - "production-history"
+  visual-direction:
+    status: "STRUCTURE_CREATED"
+    sub_branches:
+      - "visual-identity"
+      - "album-artwork"
+      - "thumbnail-studio"
+      - "lyric-backgrounds"
+      - "typography"
+      - "palette"
+      - "storyboard"
+      - "promotional-assets"
+      - "visual-history"
+  forensic:
+    status: "STRUCTURE_CREATED"
+    sub_branches:
+      - "lyric-scanner"
+      - "lyric-similarity"
+      - "audio-scanner"
+      - "audio-integrity"
+      - "acoustic-similarity"
+      - "vocal-analysis"
+      - "watermark-detection"
+      - "production-integrity"
+      - "provenance-verification"
+      - "catalog-collision"
+      - "forensic-reports"
+  governance:
+    status: "STRUCTURE_CREATED"
+    sub_branches:
+      - "governance-engine"
+      - "gate-manager"
+      - "approval"
+      - "rejection"
+      - "veto"
+      - "human-signoff"
+      - "decision-history"
+      - "governance-console"
+      - "release-lock"
+  evidence:
+    status: "STRUCTURE_CREATED"
+    sub_branches:
+      - "evidence-ledger"
+      - "original-evidence"
+      - "derived-evidence"
+      - "analytical-evidence"
+      - "authority-evidence"
+      - "event-history"
+      - "hash-chain"
+      - "serialization"
+      - "signatures"
+      - "integrity"
+      - "provenance-graph"
+      - "evidence-inspector"
+  assets:
+    status: "STRUCTURE_CREATED"
+    sub_branches:
+      - "asset-manager"
+      - "asset-registration"
+      - "audio-assets"
+      - "lyric-assets"
+      - "artwork-assets"
+      - "stem-assets"
+      - "asset-metadata"
+      - "checksums"
+      - "asset-relationships"
+      - "asset-manifest"
+  release:
+    status: "STRUCTURE_CREATED"
+    sub_branches:
+      - "release-manager"
+      - "release-package"
+      - "release-manifest"
+      - "release-signature"
+      - "release-sealing"
+      - "post-seal-verification"
+      - "master-vault"
+      - "master-player"
+      - "distribution-authorization"
+      - "release-history"
+  integrations:
+    status: "STRUCTURE_CREATED"
+    sub_branches:
+      - "ai-providers"
+      - "music-providers"
+      - "cloud-adapters"
+      - "file-adapters"
+      - "media-adapters"
+      - "registry-adapters"
+  security:
+    status: "STRUCTURE_CREATED"
+    sub_branches:
+      - "identity-security"
+      - "access-control"
+      - "cryptography"
+      - "key-management"
+      - "session-security"
+  backup:
+    status: "STRUCTURE_CREATED"
+    sub_branches:
+      - "backup-manager"
+      - "snapshot-structure"
+      - "recovery-structure"
+      - "archive-management"
+  background:
+    status: "STRUCTURE_CREATED"
+    sub_branches:
+      - "work-scheduling"
+      - "indexing"
+      - "integrity-jobs"
+      - "maintenance"
+  analytics:
+    status: "STRUCTURE_CREATED"
+    sub_branches:
+      - "system-telemetry"
+      - "project-metrics"
+      - "pipeline-metrics"
+      - "health-monitoring"
+  shared:
+    status: "STRUCTURE_CREATED"
+    existing_module: ":core:shared"
+    sub_branches:
+      - "common-resources"
+      - "shared-contracts"
+  design-system:
+    status: "STRUCTURE_CREATED"
+    sub_branches:
+      - "colors"
+      - "typography"
+      - "components"
+      - "icons"
+      - "tokens"
+  navigation:
+    status: "STRUCTURE_CREATED"
+    sub_branches:
+      - "routes"
+      - "destinations"
+      - "navigation-map"
+  testing:
+    status: "STRUCTURE_CREATED"
+    sub_branches:
+      - "unit-test-structure"
+      - "integration-test-structure"
+      - "instrumentation-test-structure"
+      - "acceptance-test-structure"
+  documentation:
+    status: "EXISTING_AND_STRUCTURE_CREATED"
+    sub_branches:
+      - "architecture"
+      - "implementation-progress"
+      - "governance"
+      - "source-inventory"
+      - "migration"
+      - "acceptance"
+  migration:
+    status: "EXISTING_AND_STRUCTURE_CREATED"
+    sub_branches:
+      - "source-mapping"
+      - "tsx-migration"
+      - "legacy-preservation"
+  tools:
+    status: "STRUCTURE_CREATED"
+    sub_branches:
+      - "audit-tools"
+      - "diagnostics"
+      - "validation-tools"

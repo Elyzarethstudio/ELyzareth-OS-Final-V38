@@ -1,0 +1,762 @@
+ELYZARETH OS — STRUCTURAL COMPLETION & UI CONSISTENCY WORK ORDER
+Assignment: EOS-STRUCT-UI-003
+Scope: Structure tree completion + UI ownership/route consistency only
+Source baseline: elyzareth-os(5).zip
+Authority: Student-Director / Human Creator
+Implementation owner: Studio
+Architecture authority: Existing approved Elyzareth OS architecture documents
+Status: READY FOR STRUCTURAL IMPLEMENTATION
+
+======================================================================
+1. PURPOSE AND BOUNDARY
+======================================================================
+
+Complete the pending repository structure and reconcile UI placement/navigation
+against the existing approved architecture. This is NOT a request to redesign
+the OS or conduct another open-ended audit.
+
+Studio must implement the structure described below and correct only structural
+or UI consistency issues explicitly identified in this work order.
+
+IN SCOPE
+- Directory/package structure and ownership.
+- Existing four-module Gradle topology.
+- UI screen ownership and source-file placement.
+- Route-to-screen mapping for all 16 destinations.
+- Navigation consistency between the Command Centre, route registry and
+  MainActivity screen dispatcher.
+- UI component/theme/design-system folder ownership.
+- Structural placeholders and duplicate directory reconciliation.
+- Structural documentation/index updates needed to reflect the final tree.
+
+OUT OF SCOPE
+- Business logic, algorithms, state-machine behaviour or contract redesign.
+- Database schema, DAO, repository behaviour or seed-data changes.
+- Security, cryptography, evidence-chain or forensic implementation.
+- Pipeline/gate rules or constitutional rule changes.
+- New features, screens, routes, destinations or navigation behaviours.
+- APK/build-system upgrades or dependency-version changes.
+- Deleting or rewriting historical App 01, App 02 or Protocol Console code.
+
+If a structural requirement appears to conflict with an approved architecture
+document, do not invent a resolution. Stop and report the exact conflict.
+
+======================================================================
+2. ARCHITECTURAL DECISIONS ALREADY SETTLED
+======================================================================
+
+A. Retain exactly the existing four Gradle modules for this phase:
+   :app
+   :core:foundation
+   :core:kernel
+   :core:shared
+
+B. Do NOT create 14 separate Gradle feature modules.
+   The target architecture explicitly recommends retaining the four-module
+   topology during the current phases. Feature separation is by package,
+   ownership and dependency boundaries inside the existing modules.
+
+C. :app owns:
+   - Application shell and navigation.
+   - Compose UI screens and UI components.
+   - ViewModels.
+   - Room SQLite implementation and Android persistence adapters.
+
+D. :core:foundation owns platform-independent constitutional/domain
+   definitions and shared domain contracts.
+
+E. :core:kernel owns the Sovereign Kernel implementation and its kernel
+   interfaces/state machinery.
+
+F. :core:shared owns shared supporting services, security/backup primitives
+   and optional integration adapters, within the existing dependency rules.
+
+G. Existing App 01 Lyric Generator, App 02 Corpus Curator and 3.2.1.0
+   Protocol Console are preservation items. They must remain available and
+   mapped into the unified application. Do not retire or replace them.
+
+======================================================================
+3. PENDING STRUCTURE BRANCHES
+======================================================================
+
+The ZIP already contains many of these root branches as .gitkeep-only
+scaffolding. Their presence does NOT mean their ownership is reconciled.
+The pending work is to make the repository tree unambiguous, remove duplicate
+ownership paths safely, and map each branch to its authoritative location.
+
+3.1 FOUNDATION / KERNEL / SHARED
+
+Existing authoritative Gradle locations:
+  core/foundation/
+  core/kernel/
+  core/shared/
+
+Root-level duplicates currently exist:
+  foundation/
+  kernel/
+  shared/
+
+Required action:
+- Keep the Gradle module directories as the authoritative implementation
+  locations.
+- Reconcile root-level folders as documentation/index-only or remove their
+  duplicate placeholder status only where the approved architecture permits.
+- Do not create a second implementation under the root-level folders.
+- Do not move working code without preserving package names and references.
+
+Target tree:
+
+core/
+├── foundation/
+│   ├── build.gradle.kts
+│   └── src/main/java/com/example/foundation/
+│       └── ConstitutionalFoundation.kt
+├── kernel/
+│   ├── build.gradle.kts
+│   └── src/main/java/com/example/kernel/
+│       └── SovereignKernel.kt
+└── shared/
+    ├── build.gradle.kts
+    └── src/main/java/com/example/shared/
+        └── SystemUtilitiesAndServices.kt
+
+3.2 CREATIVE PRODUCTION BRANCH
+
+Existing scaffolding:
+  creative/idea-studio/
+  creative/blueprint-studio/
+  creative/lyric-generator/
+  creative/lyric-curator/
+  creative/creative-dna/
+  creative/creative-factory/*
+
+A duplicate tree also exists at:
+  creative-factory/*
+
+Required action:
+- Establish creative/ as the single conceptual branch root.
+- Keep one Creative Factory subtree only.
+- Reconcile creative-factory/ against creative/creative-factory/.
+- Preserve all historical content; do not delete files blindly.
+- UI implementations remain in :app under ui/creative and ui/generator.
+- The root creative folders are structural ownership markers, not new Gradle
+  modules and not alternate Kotlin implementation locations.
+
+Target tree:
+
+creative/
+├── idea-studio/
+├── blueprint-studio/
+├── lyric-generator/
+├── lyric-curator/
+├── creative-dna/
+└── creative-factory/
+    ├── idea-processing/
+    ├── dna-matching/
+    ├── imagery-control/
+    ├── emotional-logic/
+    ├── structural-validation/
+    ├── language-validation/
+    ├── quality-assessment/
+    ├── correction-suggestions/
+    └── factory-orchestrator/
+
+3.3 PRODUCTION BRANCH
+
+Existing scaffolding:
+  production/style-engineering/
+  production/suno-workflow/
+  production/external-music-workflow/
+  production/bpm-key/
+  production/instruments/
+  production/arrangement/
+  production/vocal-direction/
+  production/production-notes/
+  production/audio-ingest/
+  production/stems/
+  production/alternates/
+  production/production-history/
+
+Required action:
+- Retain one production/ branch.
+- Keep these named sub-branches as the structural taxonomy.
+- UI implementation ownership remains :app/ui/production.
+- Do not create a second production UI tree.
+
+Target tree:
+
+production/
+├── style-engineering/
+├── suno-workflow/
+├── external-music-workflow/
+├── bpm-key/
+├── instruments/
+├── arrangement/
+├── vocal-direction/
+├── production-notes/
+├── audio-ingest/
+├── stems/
+├── alternates/
+└── production-history/
+
+3.4 EVIDENCE & PROVENANCE BRANCH
+
+Existing scaffolding:
+  evidence/evidence-ledger/
+  evidence/original-evidence/
+  evidence/derived-evidence/
+  evidence/analytical-evidence/
+  evidence/authority-evidence/
+  evidence/event-history/
+  evidence/hash-chain/
+  evidence/serialization/
+  evidence/signatures/
+  evidence/integrity/
+  evidence/provenance-graph/
+  evidence/evidence-inspector/
+
+Required action:
+- Retain one evidence/ branch.
+- Keep the sub-branch names aligned to the approved evidence architecture.
+- UI inspector remains in :app/ui/intelligence.
+- Do not create a second evidence database or persistence authority.
+
+Target tree:
+
+evidence/
+├── evidence-ledger/
+├── original-evidence/
+├── derived-evidence/
+├── analytical-evidence/
+├── authority-evidence/
+├── event-history/
+├── hash-chain/
+├── serialization/
+├── signatures/
+├── integrity/
+├── provenance-graph/
+└── evidence-inspector/
+
+3.5 FORENSIC INTELLIGENCE BRANCH
+
+Existing scaffolding:
+  forensic/lyric-scanner/
+  forensic/lyric-similarity/
+  forensic/audio-scanner/
+  forensic/audio-integrity/
+  forensic/acoustic-similarity/
+  forensic/vocal-analysis/
+  forensic/watermark-detection/
+  forensic/production-integrity/
+  forensic/provenance-verification/
+  forensic/catalog-collision/
+  forensic/forensic-reports/
+
+Required action:
+- Retain one forensic/ branch and the named sub-branches.
+- UI screen remains :app/ui/intelligence/IntelligenceAndVaultScreens.kt
+  until any source-file split is explicitly approved.
+- Do not invent scanner implementations as part of this structural assignment.
+
+Target tree:
+
+forensic/
+├── lyric-scanner/
+├── lyric-similarity/
+├── audio-scanner/
+├── audio-integrity/
+├── acoustic-similarity/
+├── vocal-analysis/
+├── watermark-detection/
+├── production-integrity/
+├── provenance-verification/
+├── catalog-collision/
+└── forensic-reports/
+
+3.6 GOVERNANCE BRANCH
+
+Existing scaffolding:
+  governance/governance-engine/
+  governance/gate-manager/
+  governance/approval/
+  governance/rejection/
+  governance/veto/
+  governance/human-signoff/
+  governance/decision-history/
+  governance/governance-console/
+  governance/release-lock/
+
+Required action:
+- Retain one governance/ branch and its sub-branches.
+- Governance UI remains :app/ui/services/SystemAndKernelScreens.kt and
+  :app/ui/protocol/ProtocolConsoleScreen.kt.
+- Do not duplicate the kernel gate engine under governance/.
+
+Target tree:
+
+governance/
+├── governance-engine/
+├── gate-manager/
+├── approval/
+├── rejection/
+├── veto/
+├── human-signoff/
+├── decision-history/
+├── governance-console/
+└── release-lock/
+
+3.7 RELEASE & DISTRIBUTION BRANCH
+
+Existing scaffolding:
+  release/release-manager/
+  release/release-package/
+  release/release-manifest/
+  release/release-signature/
+  release/release-sealing/
+  release/post-seal-verification/
+  release/master-vault/
+  release/master-player/
+  release/distribution-authorization/
+  release/release-history/
+
+Required action:
+- Retain one release/ branch.
+- Release UI remains :app/ui/intelligence/IntelligenceAndVaultScreens.kt.
+- Do not create a second release manager or master player implementation.
+
+Target tree:
+
+release/
+├── release-manager/
+├── release-package/
+├── release-manifest/
+├── release-signature/
+├── release-sealing/
+├── post-seal-verification/
+├── master-vault/
+├── master-player/
+├── distribution-authorization/
+└── release-history/
+
+3.8 SECURITY BRANCH
+
+Existing scaffolding:
+  security/identity-security/
+  security/access-control/
+  security/cryptography/
+  security/key-management/
+  security/session-security/
+
+Required action:
+- Keep the security taxonomy under security/.
+- Actual shared security service implementation remains owned by
+  :core:shared.
+- Do not create duplicate security implementations under both locations.
+
+Target tree:
+
+security/
+├── identity-security/
+├── access-control/
+├── cryptography/
+├── key-management/
+└── session-security/
+
+3.9 COMMAND CENTRE / PROJECT BRANCH
+
+Existing scaffolding:
+  command-center/dashboard/
+  command-center/project-manager/
+  command-center/active-projects/
+  command-center/archived-projects/
+  command-center/pipeline/
+  command-center/governance-overview/
+  command-center/evidence-overview/
+  command-center/forensic-overview/
+  command-center/release-overview/
+  command-center/system-health/
+  command-center/notifications/
+
+Required action:
+- Use one spelling consistently: commandcentre in Kotlin package/file
+  ownership is already established as ui/commandcentre.
+- Keep command-center/ as the conceptual branch name only if retained by
+  the approved architecture; do not create a duplicate commandcentre/ root.
+- UI implementation remains :app/ui/commandcentre/CommandCentreScreen.kt.
+
+Target tree:
+
+command-center/
+├── dashboard/
+├── project-manager/
+├── active-projects/
+├── archived-projects/
+├── pipeline/
+├── governance-overview/
+├── evidence-overview/
+├── forensic-overview/
+├── release-overview/
+├── system-health/
+└── notifications/
+
+3.10 NAVIGATION & DESIGN SYSTEM
+
+Existing scaffolding:
+  navigation/routes/
+  navigation/destinations/
+  navigation/navigation-map/
+
+  design-system/colors/
+  design-system/typography/
+  design-system/components/
+  design-system/icons/
+  design-system/tokens/
+
+Required action:
+- Navigation implementation remains :app/navigation/ElyzarethRoutes.kt and
+  MainActivity.kt dispatch until a source move is explicitly specified.
+- Theme implementation remains :app/ui/theme.
+- Shared UI components remain :app/ui/components.
+- Reconcile the conceptual branches with these authoritative source locations;
+  do not create duplicate route registries or theme systems.
+
+Target tree:
+
+navigation/
+├── routes/
+├── destinations/
+└── navigation-map/
+
+design-system/
+├── colors/
+├── typography/
+├── components/
+├── icons/
+└── tokens/
+
+======================================================================
+4. AUTHORITATIVE AND TARGET APPLICATION SOURCE TREE
+======================================================================
+
+The following is the target source ownership tree for the current four-module
+architecture. Preserve existing source files and package naming unless an
+explicit structural move is required and all references are updated.
+
+elyzareth-os/
+├── settings.gradle.kts
+├── build.gradle.kts
+├── gradle/
+│   └── libs.versions.toml
+├── app/
+│   ├── build.gradle.kts
+│   └── src/
+│       └── main/
+│           ├── AndroidManifest.xml
+│           ├── java/com/example/
+│           │   ├── MainActivity.kt
+│           │   ├── navigation/
+│           │   │   └── ElyzarethRoutes.kt
+│           │   ├── viewmodel/
+│           │   │   └── ElyzarethViewModel.kt
+│           │   ├── data/
+│           │   │   ├── local/
+│           │   │   │   ├── ElyzarethDatabase.kt
+│           │   │   │   ├── ElyzarethDao.kt
+│           │   │   │   ├── OsBranchDao.kt
+│           │   │   │   └── CorpusSeedData.kt
+│           │   │   ├── model/
+│           │   │   │   ├── CorpusModels.kt
+│           │   │   │   └── OsBranchModels.kt
+│           │   │   └── repository/
+│           │   │       ├── CorpusRepository.kt
+│           │   │       └── OsBranchRepository.kt
+│           │   └── ui/
+│           │       ├── commandcentre/
+│           │       │   └── CommandCentreScreen.kt
+│           │       ├── creative/
+│           │       │   └── CreativeBranchScreens.kt
+│           │       ├── generator/
+│           │       │   └── LyricGeneratorScreen.kt
+│           │       ├── curator/
+│           │       │   ├── CorpusDashboardScreen.kt
+│           │       │   └── CurationWorkflowPipeline.kt
+│           │       ├── production/
+│           │       │   └── ProductionBranchScreens.kt
+│           │       ├── intelligence/
+│           │       │   └── IntelligenceAndVaultScreens.kt
+│           │       ├── services/
+│           │       │   └── SystemAndKernelScreens.kt
+│           │       ├── protocol/
+│           │       │   └── ProtocolConsoleScreen.kt
+│           │       ├── components/
+│           │       │   └── ForensicBadges.kt
+│           │       └── theme/
+│           │           ├── Color.kt
+│           │           ├── Theme.kt
+│           │           └── Type.kt
+│           └── res/
+│               └── values/strings.xml
+├── core/
+│   ├── foundation/
+│   │   ├── build.gradle.kts
+│   │   └── src/main/java/com/example/foundation/
+│   │       └── ConstitutionalFoundation.kt
+│   ├── kernel/
+│   │   ├── build.gradle.kts
+│   │   └── src/main/java/com/example/kernel/
+│   │       └── SovereignKernel.kt
+│   └── shared/
+│       ├── build.gradle.kts
+│       └── src/main/java/com/example/shared/
+│           └── SystemUtilitiesAndServices.kt
+├── creative/                  [conceptual branch taxonomy]
+├── production/                [conceptual branch taxonomy]
+├── evidence/                  [conceptual branch taxonomy]
+├── forensic/                  [conceptual branch taxonomy]
+├── governance/                [conceptual branch taxonomy]
+├── release/                   [conceptual branch taxonomy]
+├── security/                  [conceptual branch taxonomy]
+├── command-center/            [conceptual branch taxonomy]
+├── navigation/                [conceptual branch taxonomy]
+├── design-system/             [conceptual branch taxonomy]
+├── migration/
+├── documentation/
+├── testing/
+└── elyzareth-app02-curator/   [historical TSX archive — preserve]
+
+NOTE:
+The conceptual branch taxonomy is not a second source tree. It must not become
+a parallel implementation location. The executable Android source of truth
+remains under app/ and core/ as defined above.
+
+======================================================================
+5. UI ROUTE CONSISTENCY — CANONICAL 16 DESTINATIONS
+======================================================================
+
+The uploaded repository already contains all 16 destination enum entries,
+all 16 screen composables, and a MainActivity dispatcher case for each.
+This is a positive baseline. Preserve it and ensure the mapping remains exact.
+
+ROUTE / SCREEN / AUTHORITATIVE FILE
+
+00 command_centre
+   CommandCentreScreen
+   app/src/main/java/com/example/ui/commandcentre/CommandCentreScreen.kt
+
+01 idea_blueprint
+   IdeaBlueprintStudioScreen
+   app/src/main/java/com/example/ui/creative/CreativeBranchScreens.kt
+
+02 lyric_generator
+   LyricGeneratorScreen
+   app/src/main/java/com/example/ui/generator/LyricGeneratorScreen.kt
+   Preserve App 01.
+
+03 lyric_curator
+   LyricCuratorModuleScreen
+   app/src/main/java/com/example/ui/creative/CreativeBranchScreens.kt
+
+04 creative_dna
+   CreativeDnaEngineScreen
+   app/src/main/java/com/example/ui/creative/CreativeBranchScreens.kt
+
+05 music_production
+   MusicProductionConsoleScreen
+   app/src/main/java/com/example/ui/production/ProductionBranchScreens.kt
+
+06 visual_direction
+   VisualDirectionStudioScreen
+   app/src/main/java/com/example/ui/production/ProductionBranchScreens.kt
+
+07 corpus_archive
+   CorpusDashboardScreen
+   app/src/main/java/com/example/ui/curator/CorpusDashboardScreen.kt
+   Preserve App 02.
+
+08 forensic_lab
+   ForensicLabScreen
+   app/src/main/java/com/example/ui/intelligence/IntelligenceAndVaultScreens.kt
+
+09 governance_console
+   GovernanceSuiteScreen
+   app/src/main/java/com/example/ui/services/SystemAndKernelScreens.kt
+   ProtocolConsoleScreen remains preserved at:
+   app/src/main/java/com/example/ui/protocol/ProtocolConsoleScreen.kt
+
+10 evidence_vault
+   EvidenceVaultScreen
+   app/src/main/java/com/example/ui/intelligence/IntelligenceAndVaultScreens.kt
+
+11 asset_registry
+   AssetRegistryScreen
+   app/src/main/java/com/example/ui/production/ProductionBranchScreens.kt
+
+12 master_vault
+   MasterVaultAndPlayerScreen
+   app/src/main/java/com/example/ui/intelligence/IntelligenceAndVaultScreens.kt
+
+13 system_services
+   SystemServicesScreen
+   app/src/main/java/com/example/ui/services/SystemAndKernelScreens.kt
+
+14 project_overview
+   ProjectAndSystemOverviewScreen
+   app/src/main/java/com/example/ui/services/SystemAndKernelScreens.kt
+
+15 sovereign_kernel
+   SovereignKernelScreen
+   app/src/main/java/com/example/ui/services/SystemAndKernelScreens.kt
+
+UI consistency actions:
+1. Keep exactly these 16 canonical destinations.
+2. Ensure every enum destination has exactly one MainActivity dispatch branch.
+3. Ensure every dispatch branch resolves to the intended composable.
+4. Ensure Command Centre cards use the same canonical enum values.
+5. Ensure bottom/top navigation shortcuts use those same enum values.
+6. Avoid duplicate route constants, duplicate navigation registries or orphan
+   composables.
+7. Preserve the existing five primary bottom-navigation shortcuts and the
+   existing Command Centre grid arrangement unless the approved UI blueprint
+   explicitly specifies otherwise.
+8. Keep Protocol Console reachable through the Governance destination without
+   creating a seventeenth destination.
+9. Keep App 02 Corpus Dashboard distinct from the Lyric Curator workspace:
+   both remain mapped as documented.
+10. Do not change visual design, colours, typography, copy, screen behaviour or
+    business logic in this assignment.
+
+======================================================================
+6. UI OWNERSHIP / PRESENTATION CONSISTENCY
+======================================================================
+
+Canonical ownership:
+- Application shell: MainActivity.kt
+- Route registry: ElyzarethRoutes.kt
+- Shared state owner: ElyzarethViewModel.kt
+- Command Centre: ui/commandcentre
+- Creative screens: ui/creative
+- App 01 Generator: ui/generator
+- App 02 Corpus Curator: ui/curator
+- Production screens: ui/production
+- Forensic / Evidence / Master Vault: ui/intelligence
+- Governance / Services / Kernel overview: ui/services
+- 3.2.1.0 Protocol: ui/protocol
+- Shared badges: ui/components
+- Theme: ui/theme
+
+Structural/UI consistency checks only:
+- No screen source file is duplicated under multiple owners.
+- No destination points to a missing composable.
+- No composable is orphaned from the 16-destination route map unless it is a
+  documented shared component or preserved legacy screen.
+- Shared theme and component imports resolve to the canonical ui/theme and
+  ui/components packages.
+- App 01, App 02 and Protocol Console remain preserved and reachable.
+- Do not split the current combined screen files merely for aesthetic reasons.
+  Source-file splitting requires a separate explicit approval.
+
+======================================================================
+7. DUPLICATE / NAMING RECONCILIATION
+======================================================================
+
+Resolve the following structural ambiguities without losing content:
+
+1. creative-factory/ versus creative/creative-factory/
+   - One canonical conceptual tree: creative/creative-factory/.
+   - Compare contents before reconciliation.
+   - Preserve any unique content; no blind deletion.
+
+2. foundation/, kernel/, shared/ versus core/foundation, core/kernel,
+   core/shared
+   - The core/ locations are authoritative Gradle implementation modules.
+   - Root-level folders must not become competing implementation locations.
+
+3. command-center/ versus ui/commandcentre/
+   - command-center/ is conceptual branch taxonomy.
+   - ui/commandcentre/ is the authoritative Kotlin UI package.
+   - Do not create another UI package or route owner.
+
+4. navigation/ versus app/.../navigation/
+   - app/.../navigation/ElyzarethRoutes.kt is executable route source.
+   - Root navigation/ is conceptual documentation taxonomy only.
+
+5. design-system/ versus app/.../ui/theme and ui/components
+   - app/.../ui/theme and ui/components remain executable source owners.
+   - Root design-system/ is taxonomy only; do not duplicate theme tokens.
+
+6. Other root branches versus :app / :core ownership
+   - Keep the root branch taxonomy only as structural documentation/organization
+     where required by the approved blueprint.
+   - Do not create parallel code implementations or duplicate data stores.
+
+======================================================================
+8. ACCEPTANCE CRITERIA — NO FURTHER DISCOVERY AUDIT
+======================================================================
+
+Studio must implement and provide evidence for these exact completion checks:
+
+STRUCTURE
+[ ] Four-module Gradle topology retained; no unapproved Gradle modules added.
+[ ] Every target branch in Sections 3 and 4 has one unambiguous owner.
+[ ] Duplicate placeholder trees reconciled without data loss.
+[ ] No duplicate implementation roots created.
+[ ] Historical TSX archive and App 01 / App 02 / Protocol sources preserved.
+[ ] Repository tree/documentation index reflects the actual final structure.
+
+UI / NAVIGATION
+[ ] All 16 canonical destinations remain present.
+[ ] All 16 destinations have one matching MainActivity dispatcher branch.
+[ ] All 16 dispatcher branches resolve to the correct composables.
+[ ] Command Centre grid references canonical destination enum values.
+[ ] Existing navigation shortcuts reference canonical destinations.
+[ ] No duplicate route registry or orphan screen is introduced.
+[ ] Shared UI components and theme retain one authoritative source location.
+[ ] App 01 Generator, App 02 Corpus Curator and Protocol Console remain
+    reachable through their documented destinations.
+
+REPORTING
+[ ] Provide final directory tree.
+[ ] Provide route-to-screen mapping table.
+[ ] Provide list of directories reconciled and files moved (if any).
+[ ] Provide list of preserved legacy files.
+[ ] Provide a concise before/after structural summary.
+[ ] Identify any item that could not be completed and the exact reason.
+
+The evidence required is structural:
+- final repository tree,
+- route enum,
+- MainActivity dispatch mapping,
+- file existence/source ownership list,
+- duplicate-path reconciliation record.
+
+Do not run or claim business-logic, database, security, forensic, contract,
+pipeline, gate or release correctness tests as part of this assignment.
+
+A compile may be used only as a basic source-reference check if Studio can run
+it without changing protected assets. It is not a substitute for the
+structural acceptance evidence above.
+
+======================================================================
+9. CHANGE CONTROL
+======================================================================
+
+- No deletion of historical files without explicit approval.
+- No source-code logic changes.
+- No Room schema, seed-data or database changes.
+- No contract/rule changes.
+- No new UI destinations or features.
+- No unapproved Gradle modules.
+- No changes to APK deliverables.
+- All moves must be recorded with original path -> final path.
+- If a proposed move risks breaking App 01, App 02 or Protocol Console,
+  stop and report rather than silently adapting behaviour.
+
+FINAL INSTRUCTION TO STUDIO
+
+Implement the pending structure and UI ownership/navigation consistency
+specified in this work order using the existing approved architecture as the
+only authority. Do not invent branches, contracts, rules, screens, modules or
+features. Do not perform another broad audit. Complete the defined work,
+produce the required structural evidence, and stop for Student-Director review.
+
+END OF WORK ORDER

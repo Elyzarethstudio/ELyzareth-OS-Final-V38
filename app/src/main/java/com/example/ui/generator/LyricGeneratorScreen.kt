@@ -71,7 +71,8 @@ fun LyricGeneratorScreen(
         modifier = modifier
             .fillMaxSize()
             .background(ObsidianBlack)
-            .padding(16.dp),
+            .padding(16.dp)
+            .testTag("lyric_generator_screen"),
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
         // App Header
