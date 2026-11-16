@@ -32,7 +32,6 @@ import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Gavel
 import androidx.compose.material.icons.filled.LibraryMusic
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PlayCircleFilled
 import androidx.compose.material3.DrawerValue
@@ -189,7 +188,7 @@ fun ElyzarethApp(viewModel: ElyzarethViewModel = viewModel()) {
 
                     Spacer(modifier = Modifier.height(10.dp))
 
-                    // Student-Director / Human Creator Badge (matching left sidebar of Image 2)
+                    // Student-Director / Human Creator Badge
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -348,16 +347,6 @@ fun ElyzarethApp(viewModel: ElyzarethViewModel = viewModel()) {
                         }
                     }
 
-                    IconButton(
-                        onClick = { viewModel.navigateToDestination(OsModuleDestination.SOVEREIGN_KERNEL) },
-                        modifier = Modifier.testTag("open_kernel_top_btn")
-                    ) {
-                        Icon(
-                            Icons.Default.Notifications,
-                            contentDescription = "Sovereign Kernel Events",
-                            tint = BronzeGold
-                        )
-                    }
                 }
             },
             bottomBar = {
