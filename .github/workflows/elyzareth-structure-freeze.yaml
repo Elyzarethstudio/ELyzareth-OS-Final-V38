@@ -1,3 +1,6 @@
+
+    
+  
 name: Elyzareth OS — Structural Freeze Audit & APK Export (.yaml)
 
 on:
@@ -40,11 +43,15 @@ jobs:
         with:
           gradle-version: '9.3.1'
 
-      - name: Decode Keystore
+      - name: Ensure Debug Keystore Exists
         run: |
           if [ -f debug.keystore.base64 ]; then
             base64 -d debug.keystore.base64 > debug.keystore
+          elif [ ! -f debug.keystore ]; then
+            keytool -genkey -v -keystore debug.keystore -alias androiddebugkey -storepass android -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
           fi
+
+          test -s debug.keystore
 
       - name: Assemble Latest Debug APK
         run: |
@@ -59,3 +66,4 @@ jobs:
             public/elyzareth-os-structure.yaml
             public/elyzareth-os-structure.yml
           retention-days: 30
+
