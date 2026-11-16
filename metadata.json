@@ -1,6 +1,8 @@
 {
   "name": "Elyzareth OS",
-  "description": "Elyzareth OS v1.0 Sovereign Creative Factory for Song Creation, Production, Corpus Curation, Forensic Intelligence, G1-G5 Governance, Evidence Vault, and Master Release.",
+  "description": "Elyzareth OS — Sovereign Creative Operating Environment. An integrated Android-based creative and governance environment for lyric generation, creative development, corpus curation, forensic intelligence, production workflows, governance, evidence preservation and release management. The original Lyric Corpus Curator is preserved as a subsystem within Elyzareth OS.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }
