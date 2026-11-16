@@ -1,25 +1,22 @@
-
-    
-  
-name: Elyzareth OS — Structural Freeze Audit & APK Export (.yaml)
+name: Elyzareth OS — Structural Audit & Manual APK Export
 
 on:
   push:
-    branches: [ "main", "master" ]
+    branches: ["main", "master"]
   pull_request:
-    branches: [ "main", "master" ]
+    branches: ["main", "master"]
   workflow_dispatch:
 
 jobs:
-  structural-freeze-audit:
-    name: Audit ELYZARETH_OS_STRUCTURE_1.0 & Package APK
+  structural-audit:
+    name: Audit ELYZARETH_OS_STRUCTURE_1.0
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Audit 160 Structural Sub-Branches & Preserved Sources
+      - name: Audit Structural Sources
         run: |
           echo "=== ELYZARETH OS STRUCTURAL FREEZE AUDIT ==="
           test -f documentation/implementation-progress/STRUCTURAL_COMPLETION_REGISTER.md
@@ -32,30 +29,46 @@ jobs:
           test -d elyzareth-app02-curator/src
           echo "Preserved baseline sources and structural registers verified."
 
+  manual-apk-export:
+    name: Build & Export Debug APK
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '21'
+          distribution: temurin
+          java-version: "21"
 
       - name: Setup Gradle 9.3.1
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: '9.3.1'
+          gradle-version: "9.3.1"
 
       - name: Ensure Debug Keystore Exists
         run: |
           if [ -f debug.keystore.base64 ]; then
             base64 -d debug.keystore.base64 > debug.keystore
           elif [ ! -f debug.keystore ]; then
-            keytool -genkey -v -keystore debug.keystore -alias androiddebugkey -storepass android -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
+            keytool -genkey -v \
+              -keystore debug.keystore \
+              -alias androiddebugkey \
+              -storepass android \
+              -keypass android \
+              -keyalg RSA \
+              -keysize 2048 \
+              -validity 10000 \
+              -dname "CN=Android Debug,O=Android,C=US"
           fi
 
           test -s debug.keystore
 
       - name: Assemble Latest Debug APK
-        run: |
-          gradle assembleDebug --stacktrace
+        run: gradle assembleDebug --stacktrace
 
       - name: Upload Latest APK & YAML Manifests
         uses: actions/upload-artifact@v4
@@ -66,4 +79,3 @@ jobs:
             public/elyzareth-os-structure.yaml
             public/elyzareth-os-structure.yml
           retention-days: 30
-
