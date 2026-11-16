@@ -1,22 +1,22 @@
-name: Elyzareth OS — Build & Public Structure APK (.yml)
+name: Elyzareth OS — Continuous Verification
 
 on:
   push:
-    branches: [ "main", "master" ]
+    branches: ["main", "master"]
   pull_request:
-    branches: [ "main", "master" ]
+    branches: ["main", "master"]
   workflow_dispatch:
 
 jobs:
-  build-and-verify:
-    name: Verify Structure, Test & Export APK
+  verify:
+    name: Verify Structure & Run Tests
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Elyzareth OS Repository
         uses: actions/checkout@v4
 
-      - name: Verify Frozen Structural Hierarchy (ELYZARETH_OS_STRUCTURE_1.0)
+      - name: Verify Frozen Structural Hierarchy
         run: |
           echo "Verifying top-level structural branches..."
           for dir in foundation kernel command-center creative creative/creative-factory corpus production visual-direction forensic governance evidence assets release integrations security backup background analytics shared design-system navigation testing documentation migration tools app core; do
@@ -30,35 +30,13 @@ jobs:
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '21'
+          distribution: temurin
+          java-version: "21"
 
       - name: Setup Gradle 9.3.1
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: '9.3.1'
-
-      - name: Ensure Debug Keystore Exists
-        run: |
-          if [ -f debug.keystore.base64 ]; then
-            base64 -d debug.keystore.base64 > debug.keystore
-          elif [ ! -f debug.keystore ]; then
-            keytool -genkey -v -keystore debug.keystore -alias androiddebugkey -storepass android -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
-          fi
-
-      - name: Build Debug APK (:app :core:foundation :core:kernel :core:shared)
-        run: gradle assembleDebug --stacktrace
+          gradle-version: "9.3.1"
 
       - name: Run Unit & Robolectric Verification Suite
         run: gradle :app:testDebugUnitTest --stacktrace
-
-      - name: Upload Elyzareth OS Latest APK & Manifests
-        uses: actions/upload-artifact@v4
-        with:
-          name: Elyzareth-OS-Latest-APK
-          path: |
-            app/build/outputs/apk/debug/app-debug.apk
-            public/*.yaml
-            public/*.yml
-            documentation/implementation-progress/STRUCTURAL_COMPLETION_REGISTER.md
-          retention-days: 30
