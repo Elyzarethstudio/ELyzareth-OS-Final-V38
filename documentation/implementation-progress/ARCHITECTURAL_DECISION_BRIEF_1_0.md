@@ -1,85 +1,44 @@
 # ELYZARETH OS — ARCHITECTURAL DECISION BRIEF 1.0
 
-**Reference:** Master Blueprint 1.1  
-**Input:** `FINAL_ARCHITECTURAL_RECONCILIATION_1_1.md`  
+**Reference:** Master Blueprint 1.1 & `EOS-STRUCT-UI-003`  
+**Input:** `FINAL_ARCHITECTURAL_RECONCILIATION_1_1.md` & `STRUCTURAL_COMPLETION_REGISTER.md`  
 **Authority:** Student-Director / Human Creator  
-**Execution Mode:** READ-ONLY AUDIT AND DOCUMENTATION  
-**Implementation Freeze:** ACTIVE
+**Last Updated:** 2026-11-17
 
-> **Notice:** None of the six architectural decisions below have been applied. Every decision is prepared with exact file paths, Gradle ownership, risk analysis, verification criteria, and marked **`PENDING STUDENT-DIRECTOR APPROVAL`**.
+> **Notice:** `ARCH-DEC-01` and `ARCH-DEC-02` have been formally approved and executed under Work Order `EOS-STRUCT-UI-003` (`STRUCTURAL_COMPLETION_REGISTER.md`). Decisions `ARCH-DEC-03` through `ARCH-DEC-06` remain prepared with exact file paths, Gradle ownership, risk analysis, verification criteria, and marked **`PENDING STUDENT-DIRECTOR APPROVAL`**.
 
 ---
 
 ## ARCH-DEC-01 — Canonical Location of Creative Factory
 
-- **Status:** `PENDING STUDENT-DIRECTOR APPROVAL`
-- **Exact Architectural Conflict:**
-  - The repository contains two identical 9-sub-branch directory hierarchies for the Creative Factory:
+- **Status:** **`APPROVED & EXECUTED (EOS-STRUCT-UI-003)`**
+- **Historical Architectural Conflict (Resolved):**
+  - The repository previously contained two identical 9-sub-branch directory hierarchies for the Creative Factory:
     1. Nested inside the Creative domain: `/creative/creative-factory/`
     2. At the repository root: `/creative-factory/`
-- **Affected Files and Directories:**
-  - `/creative/creative-factory/{idea-processing,dna-matching,imagery-control,emotional-logic,structural-validation,language-validation,quality-assessment,correction-suggestions,factory-orchestrator}/.gitkeep` (9 files)
-  - `/creative-factory/{idea-processing,dna-matching,imagery-control,emotional-logic,structural-validation,language-validation,quality-assessment,correction-suggestions,factory-orchestrator}/.gitkeep` (9 files)
-  - `/app/src/main/java/com/example/ui/creative/CreativeBranchScreens.kt` (contains unapproved `CreativeDnaEngineScreen` with a Creative Factory card)
-- **Existing Gradle Ownership and Dependencies:**
-  - Neither `/creative/creative-factory/` nor `/creative-factory/` is registered in `/settings.gradle.kts`. Both contain only zero-byte `.gitkeep` files.
-  - Current UI code referencing Creative Factory concepts resides inside `:app` (`/app/src/main/java/com/example/ui/creative/CreativeBranchScreens.kt`).
-- **Consequences of Available Options:**
-  - **Option 1A (Retain `/creative/creative-factory/` as canonical; preserve root `/creative-factory/` until cleanup is explicitly approved):**
-    - Aligns with Master Blueprint 1.1 Section 2 & 6, where the Creative Factory operates inside Layer 3 (`Creative Production`).
-    - Zero risk of deleting anything prematurely while the structural freeze is active.
-  - **Option 1B (Retain root `/creative-factory/` as canonical):**
-    - Elevates the Creative Factory to a root-level peer of `creative/`, `forensic/`, and `governance/`, diverging from the 6-layer hierarchy in Master Blueprint 1.1.
-- **Recommended Option & Technical Justification:**
-  - **Recommend Option 1A:** Designate `/creative/creative-factory/` as the canonical architectural path and preserve the root `/creative-factory/` duplicate untouched until an explicit cleanup pass is authorized. The Creative Factory's 9 sub-branches validate creative artifacts (ideas, DNA, imagery, emotional logic, structure, language) within the Creative Layer.
-- **Data-Loss, Compatibility, Regression, and Migration Risks:**
-  - **Data-Loss Risk:** None (`0` source or data files exist in either directory).
-  - **Compatibility/Regression Risk:** None (`settings.gradle.kts` does not reference either directory).
-  - **Migration Risk:** Low; only `.github/workflows/main.yml` line 21 checks `for dir in ... creative-factory ...` and must be updated at the same time `/creative-factory/` is eventually removed.
-- **Verification Required Before Execution:**
-  1. Confirm both directories contain only `.gitkeep` files (`0` `.kt` or asset files).
-  2. Update `.github/workflows/main.yml` directory check list when root `/creative-factory/` removal is authorized.
+- **Resolution Executed in `EOS-STRUCT-UI-003`:**
+  - Verified via `diff -r creative-factory creative/creative-factory` that 0 byte differences existed across the 9 `.gitkeep` sub-branches.
+  - Retained **`/creative/creative-factory/`** as the single canonical conceptual branch taxonomy inside `/creative/`.
+  - Removed the duplicate root `/creative-factory/` directory and updated `.github/workflows/main.yml` and `/creative/OWNERSHIP_INDEX.md`.
+- **Authoritative Ownership:**
+  - Conceptual taxonomy: `/creative/creative-factory/{idea-processing,dna-matching,imagery-control,emotional-logic,structural-validation,language-validation,quality-assessment,correction-suggestions,factory-orchestrator}/`
+  - UI & code ownership: `:app` (`/app/src/main/java/com/example/ui/creative/CreativeBranchScreens.kt` and `/app/src/main/java/com/example/ui/generator/LyricGeneratorScreen.kt`).
 
 ---
 
 ## ARCH-DEC-02 — Relationship Between `:core` Gradle Modules and Top-Level `foundation/`, `kernel/`, `shared/` Branches
 
-- **Status:** `PENDING STUDENT-DIRECTOR APPROVAL`
-- **Exact Architectural Conflict:**
-  - Active Gradle library modules reside under `/core/`:
-    - `:core:foundation` (`/core/foundation/build.gradle.kts`)
-    - `:core:kernel` (`/core/kernel/build.gradle.kts`)
-    - `:core:shared` (`/core/shared/build.gradle.kts`)
-  - Meanwhile, the approved structural branch hierarchy exists at the repository root:
-    - `/foundation/{human-authority,constitution,system-identity}/.gitkeep`
-    - `/kernel/{identity,authority,governor,decision-engine,event-router,state-manager,policy-engine,capability-registry,integrity-engine,recovery-manager,transaction-manager,kernel-api}/.gitkeep`
-    - `/shared/{common-resources,shared-contracts}/.gitkeep`
-- **Affected Files and Directories:**
-  - `/settings.gradle.kts` (lines 27–30: `include(":app")`, `include(":core:foundation")`, `include(":core:kernel")`, `include(":core:shared")`)
-  - `/app/build.gradle.kts` (lines 79–81: `implementation(project(":core:foundation"))`, `implementation(project(":core:kernel"))`, `implementation(project(":core:shared"))`)
-  - `/core/foundation/build.gradle.kts` & `/core/foundation/src/main/java/com/example/foundation/ConstitutionalFoundation.kt`
-  - `/core/kernel/build.gradle.kts` & `/core/kernel/src/main/java/com/example/kernel/SovereignKernel.kt`
-  - `/core/shared/build.gradle.kts` & `/core/shared/src/main/java/com/example/shared/SystemUtilitiesAndServices.kt`
-  - `/foundation/*`, `/kernel/*`, `/shared/*`
-- **Existing Gradle Ownership and Dependencies:**
-  - `:core:foundation` has no project dependencies.
-  - `:core:kernel` depends on `project(":core:foundation")`.
-  - `:core:shared` depends on `project(":core:foundation")` and `project(":core:kernel")`.
-  - `:app` depends on `:core:foundation`, `:core:kernel`, and `:core:shared`.
-- **Consequences of Available Options:**
-  - **Option 2A (Keep Gradle modules under `/core/`; retain top-level `/foundation/`, `/kernel/`, `/shared/` as architectural branch maps):**
-    - Preserves working Gradle build graphs and module dependencies without moving files or altering `settings.gradle.kts`.
-    - Requires documenting clearly that `/core/*` is the physical Gradle implementation root for the `foundation/`, `kernel/`, and `shared/` architectural branches.
-  - **Option 2B (Re-bind Gradle `projectDir` to top-level `/foundation/`, `/kernel/`, `/shared/` and remove `/core/`):**
-    - Eliminates dual paths, but requires moving `build.gradle.kts` and `src/` trees and changing `settings.gradle.kts` and `/app/build.gradle.kts`.
-- **Recommended Option & Technical Justification:**
-  - **Recommend Option 2A (per Audit Recommendation):** Keep Gradle modules under `/core/` (`:core:foundation`, `:core:kernel`, `:core:shared`) and retain the top-level `/foundation/`, `/kernel/`, and `/shared/` directories as the canonical architectural branch maps until module-by-module implementation is authorized. This avoids unnecessary build-system churn during the architectural freeze.
-- **Data-Loss, Compatibility, Regression, and Migration Risks:**
-  - **Option 2A Risk:** Zero build regression or file movement risk.
-  - **Option 2B Risk:** Moving Gradle project directories without synchronized `settings.gradle.kts` and CI updates can break Gradle sync.
-- **Verification Required Before Execution:**
-  1. Verify `:app`, `:core:foundation`, `:core:kernel`, and `:core:shared` dependency graph in `/documentation/architecture/MODULE_DEPENDENCY_MAP.md` reflects Option 2A.
-  2. Ensure sub-package namespaces inside `/core/{foundation,kernel,shared}` map cleanly to the sub-branches in `/foundation/`, `/kernel/`, and `/shared/`.
+- **Status:** **`APPROVED & EXECUTED (EOS-STRUCT-UI-003)`**
+- **Historical Architectural Conflict (Resolved):**
+  - Active Gradle library modules reside under `/core/` (`:core:foundation`, `:core:kernel`, `:core:shared`), while top-level `/foundation/`, `/kernel/`, and `/shared/` hold the conceptual sub-branch directory hierarchies.
+- **Resolution Executed in `EOS-STRUCT-UI-003` (Option 2A):**
+  - Retained the 4-module Gradle topology (`:app`, `:core:foundation`, `:core:kernel`, `:core:shared` in `/settings.gradle.kts`) as the sole authoritative compilation and implementation locations.
+  - Designated top-level `/foundation/`, `/kernel/`, and `/shared/` (along with 10 other conceptual branch roots) as documentation/taxonomy index directories via explicit `OWNERSHIP_INDEX.md` files (`13` total `OWNERSHIP_INDEX.md` files created).
+- **Existing Gradle Ownership and Dependencies (Verified):**
+  - `:core:foundation` (`/core/foundation/build.gradle.kts`) — platform-independent constitutional/domain definitions (`0` project dependencies).
+  - `:core:kernel` (`/core/kernel/build.gradle.kts`) — depends on `project(":core:foundation")`.
+  - `:core:shared` (`/core/shared/build.gradle.kts`) — depends on `project(":core:foundation")` and `project(":core:kernel")`.
+  - `:app` (`/app/build.gradle.kts`) — depends on `:core:foundation`, `:core:kernel`, and `:core:shared`.
 
 ---
 

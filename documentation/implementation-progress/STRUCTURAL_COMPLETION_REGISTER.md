@@ -251,7 +251,7 @@ elyzareth-os/
 | 04 | `CREATIVE_DNA` | `creative_dna` | `04` | `CreativeDnaEngineScreen` | `app/src/main/java/com/example/ui/creative/CreativeBranchScreens.kt` | Drawer, Command Centre 3x4 Grid Card #4 |
 | 05 | `MUSIC_PRODUCTION` | `music_production` | `05` | `MusicProductionConsoleScreen` | `app/src/main/java/com/example/ui/production/ProductionBranchScreens.kt` | Drawer, Command Centre 3x4 Grid Card #5 |
 | 06 | `VISUAL_DIRECTION` | `visual_direction` | `06` | `VisualDirectionStudioScreen` | `app/src/main/java/com/example/ui/production/ProductionBranchScreens.kt` | Drawer, Command Centre 3x4 Grid Card #6 |
-| 07 | `CORPUS_ARCHIVE` | `corpus_archive` | `07` | `CorpusDashboardScreen` *(Preserved App 02)* | `app/src/main/java/com/example/ui/curator/CorpusDashboardScreen.kt` | Drawer, Command Centre 3x4 Grid Card #7, Bottom Nav Tab 1 (`App 02 Curator`), `LyricCuratorModuleScreen` action button |
+| 07 | `CORPUS_ARCHIVE` | `corpus_archive` | `07` | `CorpusDashboardScreen` *(Preserved App 02)* | `app/src/main/java/com/example/ui/curator/CorpusDashboardScreen.kt` | Drawer, Command Centre 3x4 Grid Card #7, Bottom Nav Tab 1 (`Corpus Archive`), `LyricCuratorModuleScreen` action button |
 | 08 | `FORENSIC_LAB` | `forensic_lab` | `08` | `ForensicLabScreen` | `app/src/main/java/com/example/ui/intelligence/IntelligenceAndVaultScreens.kt` | Drawer, Command Centre 3x4 Grid Card #8 |
 | 09 | `GOVERNANCE_CONSOLE` | `governance_console` | `09` | `GovernanceSuiteScreen` *(embeds `ProtocolConsoleScreen`)* | `app/src/main/java/com/example/ui/services/SystemAndKernelScreens.kt` & `app/src/main/java/com/example/ui/protocol/ProtocolConsoleScreen.kt` | Drawer, Command Centre 3x4 Grid Card #9, Bottom Nav Tab 3 (`3.2.1.0 Protocol`) |
 | 10 | `EVIDENCE_VAULT` | `evidence_vault` | `10` | `EvidenceVaultScreen` | `app/src/main/java/com/example/ui/intelligence/IntelligenceAndVaultScreens.kt` | Drawer, Command Centre 3x4 Grid Card #10 |
@@ -259,7 +259,7 @@ elyzareth-os/
 | 12 | `MASTER_VAULT` | `master_vault` | `12` | `MasterVaultAndPlayerScreen` | `app/src/main/java/com/example/ui/intelligence/IntelligenceAndVaultScreens.kt` | Drawer, Command Centre 3x4 Grid Card #12, Bottom Nav Tab 4 (`Master Vault`) |
 | 13 | `SYSTEM_SERVICES` | `system_services` | `13` | `SystemServicesScreen` | `app/src/main/java/com/example/ui/services/SystemAndKernelScreens.kt` | Drawer, Command Centre Quick Footer Button (`13. System Services`) |
 | 14 | `PROJECT_OVERVIEW` | `project_overview` | `14` | `ProjectAndSystemOverviewScreen` | `app/src/main/java/com/example/ui/services/SystemAndKernelScreens.kt` | Drawer, Command Centre Quick Footer Button (`14. Project Overview`) |
-| 15 | `SOVEREIGN_KERNEL` | `sovereign_kernel` | `SK` | `SovereignKernelScreen` | `app/src/main/java/com/example/ui/services/SystemAndKernelScreens.kt` | Drawer, Top Bar Notification Icon, Command Centre Hero Banner Pill (`INSPECT ->`) |
+| 15 | `SOVEREIGN_KERNEL` | `sovereign_kernel` | `SK` | `SovereignKernelScreen` | `app/src/main/java/com/example/ui/services/SystemAndKernelScreens.kt` | Drawer, Command Centre Hero Banner Pill (`INSPECT ->`) |
 
 ---
 
@@ -280,7 +280,7 @@ elyzareth-os/
 
 - **Exclusion from Source Repository Exports:** APK binaries (`*.apk`) are intentionally excluded from `public/` and source repository ZIP exports to reduce archive size and prevent stale binary duplication.
 - **`.gitignore` Enforcement:** `public/*.apk` remains excluded via `/.gitignore`.
-- **Standard Build & CI Distribution:** APK generation remains available via standard Gradle build outputs (`app/build/outputs/apk/debug/app-debug.apk`) and GitHub Actions artifact uploads (`/.github/workflows/main.yml` and `/.github/workflows/elyzareth-structure-freeze.yaml`) without copying APK binaries back into `/public/`.
+- **Standard Build & CI Distribution:** Continuous verification (`/.github/workflows/main.yml`) verifies the structural hierarchy and runs unit/Robolectric tests on push and pull requests, while `/.github/workflows/elyzareth-structure-freeze.yaml` audits structural sources on push/PR and builds/uploads the debug APK (`app/build/outputs/apk/debug/app-debug.apk`) with a `debug.keystore` generation fallback on manual `workflow_dispatch`.
 
 ---
 
@@ -288,11 +288,11 @@ elyzareth-os/
 
 | Closure Item | Status | Verification Reference |
 |---|---|---|
-| **All 16 canonical destinations verified** | `VERIFIED` | `OsModuleDestination` (`ElyzarethRoutes.kt:10–145`) & `MainActivity.kt:513–589` |
+| **All 16 canonical destinations verified** | `VERIFIED` | `OsModuleDestination` (`ElyzarethRoutes.kt:10–145`) & `MainActivity.kt:502–578` |
 | **Four-module Gradle topology retained** | `VERIFIED` | `:app`, `:core:foundation`, `:core:kernel`, `:core:shared` (`settings.gradle.kts`) |
 | **Thirteen ownership indexes present** | `VERIFIED` | `command-center/`, `creative/`, `design-system/`, `evidence/`, `forensic/`, `foundation/`, `governance/`, `kernel/`, `navigation/`, `production/`, `release/`, `security/`, `shared/` (`*/OWNERSHIP_INDEX.md`) |
 | **Duplicate Creative Factory root reconciled** | `VERIFIED` | Root `/creative-factory/` removed; `/creative/creative-factory/` retained as conceptual branch taxonomy (dedicated executable factory implementation not yet established or verified) |
 | **App 01, App 02 and Protocol Console preserved** | `VERIFIED` | `LyricGeneratorScreen.kt`, `CorpusDashboardScreen.kt`, `CurationWorkflowPipeline.kt`, `ProtocolConsoleScreen.kt`, `CorpusSeedData.kt`, and `elyzareth-app02-curator/` untouched |
-| **APK exclusion is intentional and approved** | `VERIFIED` | `public/*.apk` excluded in `/.gitignore`; workflows reference `app/build/outputs/apk/debug/app-debug.apk` |
+| **APK exclusion is intentional and approved** | `VERIFIED` | `public/*.apk` excluded in `/.gitignore`; manual APK export configured in `/.github/workflows/elyzareth-structure-freeze.yaml` |
 | **Remaining documentation correction completed** | `COMPLETED` | `/creative/OWNERSHIP_INDEX.md` corrected to remove `SovereignKernelScreen` association |
 
