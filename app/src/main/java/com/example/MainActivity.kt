@@ -109,6 +109,7 @@ class MainActivity : ComponentActivity() {
 fun ElyzarethApp(viewModel: ElyzarethViewModel = viewModel()) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val baseTitles by viewModel.baseTitles.collectAsStateWithLifecycle()
+    val allBaseTitles by viewModel.allBaseTitles.collectAsStateWithLifecycle()
     val allArtifacts by viewModel.allArtifacts.collectAsStateWithLifecycle()
     val blueprints by viewModel.blueprints.collectAsStateWithLifecycle()
     val dnaProfiles by viewModel.dnaProfiles.collectAsStateWithLifecycle()
@@ -124,8 +125,11 @@ fun ElyzarethApp(viewModel: ElyzarethViewModel = viewModel()) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
 
+    val canGoBack = uiState.navigationHistory.isNotEmpty() ||
+        uiState.activeDestination != OsModuleDestination.COMMAND_CENTRE
+
     // BackHandler returns to previous module or Command Centre
-    BackHandler(enabled = uiState.activeDestination != OsModuleDestination.COMMAND_CENTRE) {
+    BackHandler(enabled = canGoBack) {
         viewModel.navigateBack()
     }
 
@@ -498,13 +502,13 @@ fun ElyzarethApp(viewModel: ElyzarethViewModel = viewModel()) {
                     .background(ObsidianBlack)
                     .padding(innerPadding)
             ) {
-                val pendingReviewCount = baseTitles.count { it.containsAmbiguity }
+                val pendingReviewCount = allBaseTitles.count { it.containsAmbiguity }
                 when (uiState.activeDestination) {
                     OsModuleDestination.COMMAND_CENTRE -> CommandCentreScreen(
                         viewModel = viewModel,
                         uiState = uiState,
                         projectContext = projectContext,
-                        totalTitlesCount = baseTitles.size,
+                        totalTitlesCount = allBaseTitles.size,
                         totalBlueprintsCount = blueprints.size,
                         pendingReviewCount = pendingReviewCount
                     )
@@ -562,14 +566,14 @@ fun ElyzarethApp(viewModel: ElyzarethViewModel = viewModel()) {
                     OsModuleDestination.SYSTEM_SERVICES -> SystemServicesScreen(
                         viewModel = viewModel,
                         uiState = uiState,
-                        titlesCount = baseTitles.size,
+                        titlesCount = allBaseTitles.size,
                         artifactsCount = allArtifacts.size,
                         kernelEvents = kernelEvents
                     )
                     OsModuleDestination.PROJECT_OVERVIEW -> ProjectAndSystemOverviewScreen(
-                        activeProjectsCount = blueprints.size.coerceAtLeast(3),
-                        totalSongsCount = baseTitles.size.coerceAtLeast(390),
-                        inProductionCount = productionTracks.size.coerceAtLeast(2),
+                        activeProjectsCount = blueprints.size,
+                        totalSongsCount = allBaseTitles.size,
+                        inProductionCount = productionTracks.size,
                         pendingApprovalCount = pendingReviewCount
                     )
                     OsModuleDestination.SOVEREIGN_KERNEL -> SovereignKernelScreen(

@@ -336,21 +336,27 @@ fun CommandCentreScreen(
                     ) {
                         // Left column: Kernel, DB, Governance
                         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                            StatusIndicatorLine("Kernel: Online", StateParsed)
-                            StatusIndicatorLine("Database: OK", StateParsed)
-                            StatusIndicatorLine("Governance: Active", StateParsed)
+                            // These subsystem health probes are not exposed by the current
+                            // ViewModel contract. Report that limitation instead of inventing health.
+                            StatusIndicatorLine("Kernel: Context available", StateParsed)
+                            StatusIndicatorLine("Database: Status not exposed", StateUnverified)
+                            StatusIndicatorLine("Governance: Status not exposed", StateUnverified)
                         }
 
                         // Middle column: Projects, Songs, Pending G2
                         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                            StatusMetricLine("Projects: ${totalBlueprintsCount.coerceAtLeast(3)}")
-                            StatusMetricLine("Songs: ${totalTitlesCount.coerceAtLeast(390)}")
+                            StatusMetricLine("Projects: $totalBlueprintsCount")
+                            StatusMetricLine("Songs: $totalTitlesCount")
                             StatusMetricLine("Pending Review: $pendingReviewCount")
                         }
 
-                        // Right column: 100% System Health Ring
+                        // Right column: System Health Ring (clamped 0..100%, proportional 0..360° sweep)
+                        val clampedHealthPercent = clampSystemHealthPercent(projectContext.systemHealthPercent)
+                        val healthSweepAngle = computeHealthRingSweepAngle(projectContext.systemHealthPercent)
                         Box(
-                            modifier = Modifier.size(74.dp),
+                            modifier = Modifier
+                                .size(74.dp)
+                                .testTag("system_health_ring"),
                             contentAlignment = Alignment.Center
                         ) {
                             Canvas(modifier = Modifier.fillMaxSize()) {
@@ -361,20 +367,23 @@ fun CommandCentreScreen(
                                     useCenter = false,
                                     style = Stroke(width = 7.dp.toPx(), cap = StrokeCap.Round)
                                 )
-                                drawArc(
-                                    color = StateParsed,
-                                    startAngle = -90f,
-                                    sweepAngle = 360f,
-                                    useCenter = false,
-                                    style = Stroke(width = 7.dp.toPx(), cap = StrokeCap.Round)
-                                )
+                                if (healthSweepAngle > 0f) {
+                                    drawArc(
+                                        color = StateParsed,
+                                        startAngle = -90f,
+                                        sweepAngle = healthSweepAngle,
+                                        useCenter = false,
+                                        style = Stroke(width = 7.dp.toPx(), cap = StrokeCap.Round)
+                                    )
+                                }
                             }
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text(
-                                    text = "${projectContext.systemHealthPercent}%",
+                                    text = "$clampedHealthPercent%",
                                     fontSize = 15.sp,
                                     fontWeight = FontWeight.ExtraBold,
-                                    color = WitnessParchment
+                                    color = WitnessParchment,
+                                    modifier = Modifier.testTag("system_health_percent_text")
                                 )
                                 Text(
                                     text = "System\nHealth",
@@ -418,6 +427,12 @@ fun CommandCentreScreen(
         }
     }
 }
+
+internal fun clampSystemHealthPercent(rawPercent: Int): Int =
+    rawPercent.coerceIn(0, 100)
+
+internal fun computeHealthRingSweepAngle(rawPercent: Int): Float =
+    clampSystemHealthPercent(rawPercent) * 3.6f
 
 @Composable
 private fun CommandCentreModuleTile(

@@ -87,25 +87,56 @@ data class ElyzarethUiState(
     val lastBackupSnapshot: BackupSnapshotManifest? = null
 )
 
-class ElyzarethViewModel(application: Application) : AndroidViewModel(application) {
+class ElyzarethViewModel(
+    application: Application,
+    database: ElyzarethDatabase,
+    autoInitializeSeedData: Boolean
+) : AndroidViewModel(application) {
 
-    private val repository: CorpusRepository
-    private val branchRepository: OsBranchRepository
+    constructor(application: Application) : this(
+        application = application,
+        database = ElyzarethDatabase.getDatabase(application),
+        autoInitializeSeedData = true
+    )
+
+    private val repository: CorpusRepository = CorpusRepository(database.elyzarethDao())
+    private val branchRepository: OsBranchRepository = OsBranchRepository(database.osBranchDao())
 
     private val _uiState = MutableStateFlow(ElyzarethUiState())
 
     init {
-        val db = ElyzarethDatabase.getDatabase(application)
-        repository = CorpusRepository(db.elyzarethDao())
-        branchRepository = OsBranchRepository(db.osBranchDao())
+        if (autoInitializeSeedData) {
+            viewModelScope.launch {
+                repository.ensureCorpusInitialized()
+                branchRepository.ensureBranchesInitialized()
+            }
+        }
 
-        viewModelScope.launch {
-            repository.ensureCorpusInitialized()
-            branchRepository.ensureBranchesInitialized()
+        val initialReport = if (autoInitializeSeedData) {
+            CorpusSeedData.getInitialReport()
+        } else {
+            CorpusAuditReport(
+                timestamp = "1970-01-01T00:00:00Z",
+                totalFilesDiscovered = 0,
+                baseTitlesDiscovered = 0,
+                totalArtifactsDiscovered = 0,
+                successfullyParsed = 0,
+                unparsed = 0,
+                duplicateCandidates = 0,
+                orphanArtifacts = 0,
+                missingExpectedComponents = 0,
+                englishCount = 0,
+                hindiCount = 0,
+                multilingualCount = 0,
+                evidenceAvailableCount = 0,
+                evidenceUnavailableCount = 0,
+                itemsRequiringHumanReview = 0
+            )
         }
 
         // Initialize generator stanzas
         _uiState.value = _uiState.value.copy(
+            report = initialReport,
             generatedStanzas = repository.generateWitnessLyrics(
                 anchor = DEFAULT_PHYSICAL_ANCHORS.first(),
                 pillar = WitnessPillar.DOMESTIC,
@@ -115,6 +146,17 @@ class ElyzarethViewModel(application: Application) : AndroidViewModel(applicatio
             )
         )
     }
+
+    /**
+     * Complete corpus stream. Dashboard totals, review totals and backup manifests must
+     * use this stream; baseTitles below is intentionally filtered for the curator UI.
+     */
+    val allBaseTitles: StateFlow<List<BaseTitleEntity>> = repository.allBaseTitles
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = emptyList()
+        )
 
     val baseTitles: StateFlow<List<BaseTitleEntity>> = combine(
         repository.allBaseTitles,
@@ -137,20 +179,20 @@ class ElyzarethViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
+        started = SharingStarted.Eagerly,
         initialValue = emptyList()
     )
 
     val allArtifacts: StateFlow<List<ArtifactEntity>> = repository.allArtifacts
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
+            started = SharingStarted.Eagerly,
             initialValue = emptyList()
         )
 
     // Functional Branch StateFlows
     val blueprints: StateFlow<List<IdeaBlueprintEntity>> = branchRepository.allBlueprints
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val dnaProfiles: StateFlow<List<CreativeDnaEntity>> = branchRepository.allDnaProfiles
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
@@ -165,7 +207,7 @@ class ElyzarethViewModel(application: Application) : AndroidViewModel(applicatio
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     val evidenceRecords: StateFlow<List<EvidenceLedgerEntity>> = branchRepository.allEvidenceRecords
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val registeredAssets: StateFlow<List<RegisteredAssetEntity>> = branchRepository.allRegisteredAssets
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
@@ -188,19 +230,19 @@ class ElyzarethViewModel(application: Application) : AndroidViewModel(applicatio
         navigateToDestination(destination)
     }
 
+    fun navigateTo(destination: OsModuleDestination) {
+        navigateToDestination(destination)
+    }
+
     fun navigateToDestination(destination: OsModuleDestination) {
         val current = _uiState.value.activeDestination
         val updatedHistory = if (current != destination) {
-            (_uiState.value.navigationHistory + current).takeLast(12)
+            (_uiState.value.navigationHistory.filterNot { it == destination || it == current } + current)
+                .takeLast(OsModuleDestination.entries.size)
         } else {
             _uiState.value.navigationHistory
         }
-        val mappedTab = when (destination) {
-            OsModuleDestination.CORPUS_ARCHIVE, OsModuleDestination.LYRIC_CURATOR -> 0
-            OsModuleDestination.LYRIC_GENERATOR, OsModuleDestination.IDEA_BLUEPRINT -> 1
-            OsModuleDestination.GOVERNANCE_CONSOLE, OsModuleDestination.EVIDENCE_VAULT -> 2
-            else -> 3
-        }
+        val mappedTab = legacyTabFor(destination)
         _uiState.value = _uiState.value.copy(
             activeTab = mappedTab,
             activeDestination = destination,
@@ -213,21 +255,43 @@ class ElyzarethViewModel(application: Application) : AndroidViewModel(applicatio
         )
     }
 
+    private fun legacyTabFor(destination: OsModuleDestination): Int = when (destination) {
+        OsModuleDestination.CORPUS_ARCHIVE,
+        OsModuleDestination.LYRIC_CURATOR -> 0
+
+        OsModuleDestination.LYRIC_GENERATOR,
+        OsModuleDestination.IDEA_BLUEPRINT -> 1
+
+        OsModuleDestination.GOVERNANCE_CONSOLE,
+        OsModuleDestination.EVIDENCE_VAULT -> 2
+
+        else -> 3
+    }
+
     fun navigateBack(): Boolean {
-        val history = _uiState.value.navigationHistory
-        if (history.isNotEmpty()) {
-            val prev = history.last()
-            _uiState.value = _uiState.value.copy(
-                activeDestination = prev,
-                navigationHistory = history.dropLast(1)
-            )
-            return true
-        }
-        if (_uiState.value.activeDestination != OsModuleDestination.COMMAND_CENTRE) {
-            _uiState.value = _uiState.value.copy(activeDestination = OsModuleDestination.COMMAND_CENTRE)
-            return true
-        }
-        return false
+        val current = _uiState.value
+        val previous = current.navigationHistory.lastOrNull()
+            ?: if (current.activeDestination != OsModuleDestination.COMMAND_CENTRE) {
+                OsModuleDestination.COMMAND_CENTRE
+            } else {
+                return false
+            }
+
+        _uiState.value = current.copy(
+            activeTab = legacyTabFor(previous),
+            activeDestination = previous,
+            navigationHistory = if (current.navigationHistory.isNotEmpty()) {
+                current.navigationHistory.dropLast(1)
+            } else {
+                emptyList()
+            }
+        )
+        SovereignKernel.recordEvent(
+            branch = "NavigationRouter",
+            action = "NAVIGATE_BACK",
+            details = "Restored ${previous.title}"
+        )
+        return true
     }
 
     // Kernel & Governance Actions
@@ -349,10 +413,10 @@ class ElyzarethViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun createSystemBackupSnapshot() {
         val snap = SnapshotBackupManager.generateSnapshot(
-            titlesCount = baseTitles.value.size.coerceAtLeast(390),
-            artifactsCount = allArtifacts.value.size.coerceAtLeast(510),
-            projectsCount = blueprints.value.size.coerceAtLeast(3),
-            evidenceCount = evidenceRecords.value.size.coerceAtLeast(2)
+            titlesCount = allBaseTitles.value.size,
+            artifactsCount = allArtifacts.value.size,
+            projectsCount = blueprints.value.size,
+            evidenceCount = evidenceRecords.value.size
         )
         _uiState.value = _uiState.value.copy(
             lastBackupSnapshot = snap,

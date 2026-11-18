@@ -1,11 +1,11 @@
 package com.example.navigation
 
 /**
- * ELYZARETH OS — AUTHORITATIVE NAVIGATION SYSTEM
+ * ELYZARETH OS — AUTHORITATIVE NAVIGATION SYSTEM.
  * Reference: ELYZARETH_OS_STRUCTURE_1.0 & Complete UI/UX Suite v1.0
  *
- * Maps every room in the Mansion Blueprint and every screen in the UI/UX Suite 1.0
- * to a canonical, type-safe destination.
+ * Canonical route registry for the V38 application shell.
+ * Keep routeId values stable: they are navigation identifiers, not display labels.
  */
 enum class OsModuleDestination(
     val routeId: String,
@@ -145,8 +145,8 @@ enum class OsModuleDestination(
     );
 
     companion object {
-        // The 12 main cards displayed in the 3x4 Command Centre Grid (matching Image 2 center phone)
-        val COMMAND_CENTRE_GRID_MODULES = listOf(
+        /** The twelve primary module cards shown in the Command Centre grid. */
+        val COMMAND_CENTRE_GRID_MODULES: List<OsModuleDestination> = listOf(
             IDEA_BLUEPRINT,
             LYRIC_GENERATOR,
             LYRIC_CURATOR,
